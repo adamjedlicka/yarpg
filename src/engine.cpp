@@ -34,10 +34,17 @@ void Engine::Start() {
 
 void Engine::Stop() { this->active = false; }
 
-Engine::Buffer *Engine::GetCurBuffer() { return this->buffers[0]; }
+bool Engine::LoadLevel(Level *level) {
+	this->level = level;
 
-Engine::Buffer::Buffer(){};
-Engine::Buffer::Buffer(uint16_t width, uint16_t height) {
+	return true;
+}
+
+Buffer *Engine::GetCurBuffer() { return this->buffers[0]; }
+
+Buffer::Buffer() {}
+
+Buffer::Buffer(uint16_t width, uint16_t height) {
 	this->width = width;
 	this->height = height;
 	this->canvas = new char *[height];
@@ -45,13 +52,18 @@ Engine::Buffer::Buffer(uint16_t width, uint16_t height) {
 		this->canvas[i] = new char[width];
 }
 
-Engine::Buffer::~Buffer() {
+Buffer::~Buffer() {
 	for (uint16_t i = 0; i < this->height; ++i)
 		delete[] this->canvas[i];
 	delete[] this->canvas;
 }
 
-void Engine::Buffer::DrawChar(uint16_t height, uint16_t width, char c) {
+void Buffer::DrawChar(uint16_t height, uint16_t width, char c) {
+	if (height < 0 || width < 0)
+		return;
+	if (height >= this->height || width >= this->width)
+		return;
+
 	switch (c) {
 	case '\0':
 		break;
@@ -60,7 +72,7 @@ void Engine::Buffer::DrawChar(uint16_t height, uint16_t width, char c) {
 	}
 }
 
-void Engine::Buffer::ClearCanvas() {
+void Buffer::ClearCanvas() {
 	for (uint16_t i = 0; i < this->height; ++i) {
 		for (uint16_t j = 0; j < this->width; j++) {
 			this->canvas[i][j] = ' ';
@@ -90,13 +102,17 @@ void Engine::loop() {
 	}
 }
 
-void Engine::tick() {}
+void Engine::tick() {
+	if (this->level)
+		this->level->Tick(this);
+}
 
 void Engine::render() {
 	Buffer *buf = this->GetCurBuffer();
 	buf->ClearCanvas();
 
-	
+	if (this->level)
+		this->level->Render(buf);
 
 	for (uint16_t i = 0; i < buf->GetHeight(); ++i) {
 		mvprintw(i, 0, buf->GetLine(i));
