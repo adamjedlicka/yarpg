@@ -16,6 +16,8 @@ Engine::Engine() {
 		this->buffers[i] = new Buffer(this->maxWidth, this->maxHeight);
 
 	this->active = false;
+	this->debug = false;
+	this->tickCount = 0;
 }
 
 Engine::~Engine() { endwin(); }
@@ -100,16 +102,21 @@ void Engine::loop() {
 
 		// Game logic and rendering
 		this->tick();
+		this->tickCount++;
 		this->render();
 
 		// Calculate sleep time for the rest of the frame, to save CPU load
 		clock_t now = clock();
 		double tm = double(now - drawTime) / CLOCKS_PER_SEC;
 		usleep((1.0 / MAX_FPS - tm) * 1000000);
+		drawTime = clock();
 	}
 }
 
 void Engine::tick() {
+	if (this->GetKey(KEY_F(2)))
+		this->debug = !this->debug;
+
 	if (this->level)
 		this->level->Tick(this);
 }
@@ -120,6 +127,12 @@ void Engine::render() {
 
 	if (this->level)
 		this->level->Render(buf);
+
+	if (this->debug) {
+		std::stringstream ss;
+		ss << "tickCount: " << this->tickCount;
+		buf->DrawString(0, 0, ss.str());
+	}
 
 	for (int i = 0; i < buf->GetHeight(); ++i) {
 		mvprintw(i, 0, buf->GetLine(i));

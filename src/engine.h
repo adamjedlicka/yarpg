@@ -5,10 +5,12 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <ncurses.h>
+#include <sstream>
 #include <string>
 #include <unistd.h>
 #include <vector>
+
+#include <ncurses.h>
 
 #define MAX_FPS 30	// Maximum FPS. Used to calculate sleep time between frames
 #define MAX_KEYS 512  // Maximum number of keys ncurses can return
@@ -28,7 +30,8 @@ class Engine {
 	bool keys[MAX_KEYS];
 
 	int maxWidth, maxHeight;
-	bool active;
+	bool active, debug;
+	int tickCount;
 
 	Buffer *buffers[MAX_BUFFERS];
 	Level *level;
@@ -44,6 +47,7 @@ class Engine {
 
 	Buffer *GetCurBuffer();
 
+	bool GetKey(int i) { return this->keys[i]; };
 	void SetLogStream(std::ostringstream *oss) { this->log = oss; };
 
   private:
@@ -95,8 +99,11 @@ class Level : public Drawable {
 
 class Structure : public Drawable {
   public:
-	virtual void SetLevel(Level *) = 0;
 	virtual Level *GetLevel() const = 0;
+	virtual int GetPosX() const = 0;
+	virtual int GetPosY() const = 0;
+	virtual void SetLevel(Level *) = 0;
+	virtual void SetXY(int, int) = 0;
 };
 
 #endif

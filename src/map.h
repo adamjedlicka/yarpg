@@ -1,12 +1,11 @@
 #ifndef __MAP_H
 #define __MAP_H
 
-#include <fstream>
-#include <iostream>
+#include <vector>
 #include <sstream>
-#include <string>
 
 #include "engine.h"
+#include "structure.h"
 
 class Map : public Level {
   protected:
@@ -16,6 +15,8 @@ class Map : public Level {
 	int spawnX, spawnY;
 
 	Entity *player;
+	std::vector< Entity * > entities;
+	std::vector< Structure * > structures;
 
   public:
 	Map(const std::string &);

@@ -5,8 +5,8 @@ CC = g++
 CF = -std=c++11 -Wall -pedantic
 CL = -lncurses
 
-src = src/main.cpp src/engine.cpp src/map.cpp src/player.cpp
-obj = build/main.o build/engine.o build/map.o build/player.o
+src = src/main.cpp src/engine.cpp src/map.cpp src/player.cpp src/structure.cpp
+obj = build/main.o build/engine.o build/map.o build/player.o build/structure.o
 
 build: ${program}
 	

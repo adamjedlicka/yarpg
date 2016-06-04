@@ -1,24 +1,17 @@
-#ifndef __PLAYER_H
-#define __PLAYER_H
+#ifndef __STRUCTURE_H
+#define __STRUCTURE_H
 
 #include "engine.h"
 
-class Player : public Entity {
-  protected:
-	std::string name;
+class Wall : public Structure {
+  private:
 	int posY, posX;
-	
-	// stats
-	int speed;
-	
-	// state
-	int ticksSinceLastStep;
 
 	Level *level;
 
   public:
-	Player(const std::string &);
-	~Player();
+	Wall(int, int, Level *);
+	~Wall();
 
 	void Tick(Engine *);
 	void Render(Buffer *) const;
