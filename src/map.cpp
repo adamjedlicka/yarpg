@@ -34,15 +34,17 @@ void Map::SpawnPlayer(Entity *player) {
 
 void Map::Tick(Engine *engine) {
 	this->player->Tick(engine);
-	
+
 	for (const auto &v : this->structures)
 		v->Tick(engine);
 
 	for (const auto &v : this->entities)
 		v->Tick(engine);
-	
+
 	this->offX = (engine->GetCurBuffer()->GetWidth() / 2) - this->player->GetPosX();
 	this->offY = (engine->GetCurBuffer()->GetHeight() / 2) - this->player->GetPosY();
+
+	engine->log << "mapName: " << this->name << ", offsets: " << this->offX << ", " << this->offX << std::endl;
 }
 
 void Map::Render(Buffer *buffer) const {

@@ -117,6 +117,8 @@ void Engine::tick() {
 	if (this->GetKey(KEY_F(2)))
 		this->debug = !this->debug;
 
+	this->log << "tickCount: " << this->tickCount << std::endl; // DEBUG
+
 	if (this->level)
 		this->level->Tick(this);
 }
@@ -128,11 +130,9 @@ void Engine::render() {
 	if (this->level)
 		this->level->Render(buf);
 
-	if (this->debug) {
-		std::stringstream ss;
-		ss << "tickCount: " << this->tickCount;
-		buf->DrawString(0, 0, ss.str());
-	}
+	if (this->debug)
+		buf->DrawString(0, 0, this->log.str());
+	this->log.str("");
 
 	for (int i = 0; i < buf->GetHeight(); ++i) {
 		mvprintw(i, 0, buf->GetLine(i));

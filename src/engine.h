@@ -26,7 +26,6 @@ class Buffer;
 class Engine {
   private:
 	WINDOW *window;
-	std::ostringstream *log;
 	bool keys[MAX_KEYS];
 
 	int maxWidth, maxHeight;
@@ -37,6 +36,8 @@ class Engine {
 	Level *level;
 
   public:
+	std::ostringstream log;
+
 	Engine();
 	~Engine();
 
@@ -46,9 +47,7 @@ class Engine {
 	bool LoadLevel(Level *);
 
 	Buffer *GetCurBuffer();
-
 	bool GetKey(int i) { return this->keys[i]; };
-	void SetLogStream(std::ostringstream *oss) { this->log = oss; };
 
   private:
 	void loop();

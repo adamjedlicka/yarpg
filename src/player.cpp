@@ -30,6 +30,8 @@ void Player::Tick(Engine *engine) {
 		this->ticksSinceLastStep = 0;
 	}
 	this->ticksSinceLastStep++;
+
+	engine->log << "playerCoords: " << this->posX << ", " << this->posY << std::endl;
 }
 
 void Player::Render(Buffer *buffer) const {
