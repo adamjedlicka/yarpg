@@ -10,22 +10,15 @@ Engine::Engine() {
 	wtimeout(this->window, 1);
 	curs_set(false);
 
-	this->log.open("log.txt");
-	for (uint16_t i = 0; i < MAX_KEYS; ++i)
-		this->keys[i] = false;
-
 	this->maxHeight = getmaxy(this->window);
 	this->maxWidth = getmaxx(this->window);
-	for (uint16_t i = 0; i < MAX_BUFFERS; ++i)
+	for (int i = 0; i < MAX_BUFFERS; ++i)
 		this->buffers[i] = new Buffer(this->maxWidth, this->maxHeight);
 
 	this->active = false;
 }
 
-Engine::~Engine() {
-	endwin();
-	this->log.close();
-}
+Engine::~Engine() { endwin(); }
 
 void Engine::Start() {
 	this->active = true;
@@ -44,21 +37,21 @@ Buffer *Engine::GetCurBuffer() { return this->buffers[0]; }
 
 Buffer::Buffer() {}
 
-Buffer::Buffer(uint16_t width, uint16_t height) {
+Buffer::Buffer(int width, int height) {
 	this->width = width;
 	this->height = height;
 	this->canvas = new char *[height];
-	for (uint16_t i = 0; i < height; ++i)
+	for (int i = 0; i < height; ++i)
 		this->canvas[i] = new char[width];
 }
 
 Buffer::~Buffer() {
-	for (uint16_t i = 0; i < this->height; ++i)
+	for (int i = 0; i < this->height; ++i)
 		delete[] this->canvas[i];
 	delete[] this->canvas;
 }
 
-void Buffer::DrawChar(uint16_t height, uint16_t width, char c) {
+void Buffer::DrawChar(int height, int width, char c) {
 	if (height < 0 || width < 0)
 		return;
 	if (height >= this->height || width >= this->width)
@@ -66,15 +59,29 @@ void Buffer::DrawChar(uint16_t height, uint16_t width, char c) {
 
 	switch (c) {
 	case '\0':
+	case '\t':
 		break;
 	default:
 		this->canvas[height][width] = c;
 	}
 }
 
+void Buffer::DrawString(int height, int width, const std::string &str) {
+	int w = 0;
+	int h = 0;
+	for (unsigned int i = 0; i < str.length(); ++i) {
+		if (str[i] == '\n') {
+			++h;
+			w = 0;
+			continue;
+		}
+		this->DrawChar(height + h, width + w++, str[i]);
+	}
+}
+
 void Buffer::ClearCanvas() {
-	for (uint16_t i = 0; i < this->height; ++i) {
-		for (uint16_t j = 0; j < this->width; j++) {
+	for (int i = 0; i < this->height; ++i) {
+		for (int j = 0; j < this->width; j++) {
 			this->canvas[i][j] = ' ';
 		}
 	}
@@ -86,7 +93,7 @@ void Engine::loop() {
 	while (this->active) {
 		// Store all key presses in keyboard for future querries
 		int c = 0;
-		for (uint16_t i = 0; i < MAX_KEYS; ++i)
+		for (int i = 0; i < MAX_KEYS; ++i)
 			this->keys[i] = false;
 		while (c = getch(), c != ERR)
 			this->keys[c] = true;
@@ -114,7 +121,7 @@ void Engine::render() {
 	if (this->level)
 		this->level->Render(buf);
 
-	for (uint16_t i = 0; i < buf->GetHeight(); ++i) {
+	for (int i = 0; i < buf->GetHeight(); ++i) {
 		mvprintw(i, 0, buf->GetLine(i));
 	}
 
