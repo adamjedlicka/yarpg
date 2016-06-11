@@ -157,13 +157,13 @@ void Engine::render() {
 			int index = 1;
 			if (this->_COLOR) {
 				short fg, bg;
-				for (int i = 1; i <= usedColorPairs + 1; ++i) {
+				for (int i = 1; i <= usedColorPairs; ++i) {
 					pair_content(i, &fg, &bg);
 					if (fg == line[j].fg && bg == line[j].bg) {
 						index = i;
 						break;
 					}
-					if (i == usedColorPairs + 1) {
+					if (i == usedColorPairs) {
 						index = ++usedColorPairs;
 						init_pair(index, line[j].fg, line[j].bg);
 						break;

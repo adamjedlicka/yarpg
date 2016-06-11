@@ -45,8 +45,6 @@ void Map::Tick(Engine *engine) {
 	if (this->structures[y * this->width + x] != NULL) {
 		this->structures[y * this->width + x]->Colide(this->player);
 		this->player->Colide(this->structures[y * this->width + x]);
-
-		engine->log << "player colision: (" << x << ", " << y << ")" << std::endl;
 	}
 
 	for (int i = 0; i < this->height * this->width; ++i)
@@ -60,8 +58,6 @@ void Map::Tick(Engine *engine) {
 		if (this->structures[y * this->width + x] != NULL) {
 			this->structures[y * this->width + x]->Colide(v);
 			v->Colide(this->structures[y * this->width + x]);
-
-			engine->log << "colision: (" << x << ", " << y << ")" << std::endl;
 		}
 	}
 
@@ -78,6 +74,7 @@ void Map::Tick(Engine *engine) {
 	this->offY = (engine->GetCurBuffer()->GetHeight() / 2) - this->player->GetPos().second;
 
 	engine->log << "mapName: " << this->name << ", offsets: " << this->offX << ", " << this->offX << std::endl;
+	engine->log << "entityCnt: " << this->entities.size() << std::endl;
 }
 
 void Map::Render(Buffer *buffer) const {
