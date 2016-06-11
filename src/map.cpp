@@ -9,10 +9,10 @@ Map::Map(const std::string &name) {
 Map::~Map() {}
 
 bool Map::LoadFromFile(const std::string &path) {
-	this->height = 15;
-	this->width = 30;
-	this->spawnX = 10;
-	this->spawnY = 10;
+	this->height = 50;
+	this->width = 100;
+	this->spawnX = 50;
+	this->spawnY = 25;
 
 	this->structures = new Structure *[this->height * this->width];
 	for (int i = 0; i < this->height; ++i) {
@@ -31,6 +31,11 @@ void Map::SpawnPlayer(Entity *player) {
 	this->player = player;
 	this->player->SetLevel(this);
 	this->player->SetXY(this->spawnX, this->spawnY);
+}
+
+void Map::SpawnEntity(Entity *entity) {
+	entity->SetLevel(this);
+	this->entities.push_back(entity);
 }
 
 void Map::Tick(Engine *engine) {
@@ -57,6 +62,15 @@ void Map::Tick(Engine *engine) {
 			v->Colide(this->structures[y * this->width + x]);
 
 			engine->log << "colision: (" << x << ", " << y << ")" << std::endl;
+		}
+	}
+
+	for (auto it = this->entities.begin(); it != this->entities.end(); ++it) {
+		if ((*it)->Destroyed()) {
+			delete *it;
+			it = this->entities.erase(it);
+			if (it == this->entities.end())
+				break;
 		}
 	}
 

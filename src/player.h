@@ -2,12 +2,14 @@
 #define __PLAYER_H
 
 #include "engine.h"
+#include "entity.h"
 
 class Player : public Entity {
   protected:
 	std::string name;
 	int posY, posX;
 	int dirY, dirX;
+	bool destroyed;
 
 	// stats
 	int speed;
@@ -37,6 +39,8 @@ class Player : public Entity {
 
 	void Colide(Entity *){};
 	void Colide(Structure *){};
+
+	bool Destroyed() const { return this->destroyed; };
 };
 
 #endif

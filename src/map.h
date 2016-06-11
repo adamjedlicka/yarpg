@@ -24,6 +24,7 @@ class Map : public Level {
 
 	bool LoadFromFile(const std::string &);
 	void SpawnPlayer(Entity *);
+	void SpawnEntity(Entity *);
 
 	void Tick(Engine *);
 	void Render(Buffer *) const;

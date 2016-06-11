@@ -53,6 +53,7 @@ class Engine {
 
 	Buffer *GetCurBuffer();
 	bool GetKey(int i) { return this->keys[i]; };
+	Level *GetCurLevel() { return this->level; };
 
   private:
 	void loop();
@@ -89,12 +90,16 @@ class Buffer {
 
 class Drawable {
   public:
+	virtual ~Drawable(){};
+
 	virtual void Tick(Engine *) = 0;
 	virtual void Render(Buffer *) const = 0;
 };
 
 class Entity : public Drawable {
   public:
+	virtual ~Entity(){};
+
 	virtual Level *GetLevel() const = 0;
 	virtual std::pair< int, int > GetPos() const = 0; // position of the entity
 	virtual std::pair< int, int > GetDir() const = 0; // direction in which the entity is moving
@@ -102,12 +107,14 @@ class Entity : public Drawable {
 	virtual void SetXY(int, int) = 0;
 	virtual void Colide(Entity *) = 0;
 	virtual void Colide(Structure *) = 0;
+	virtual bool Destroyed() const = 0;
 };
 
 class Level : public Drawable {
   public:
 	virtual int GetOffX() const = 0;
 	virtual int GetOffY() const = 0;
+	virtual void SpawnEntity(Entity *) = 0;
 };
 
 class Structure : public Drawable {
