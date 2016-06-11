@@ -1,7 +1,7 @@
 #include "player.h"
 
-Player::Player(const std::string &name) : Entity() {
-	this->name = name;
+Player::Player(const std::string &str) : Entity(0, 0) {
+	name = str;
 
 	// set stats
 	speed = 10;
@@ -15,49 +15,29 @@ Player::~Player() {}
 
 void Player::Tick(Engine *engine) {
 	if (engine->GetKey('d'))
-		this->dirX = MIN(this->dirX + 1, 1);
+		dirX = MIN(dirX + 1, 1);
 
 	if (engine->GetKey('a'))
-		this->dirX = MAX(this->dirX - 1, -1);
+		dirX = MAX(dirX - 1, -1);
 
 	if (engine->GetKey('s'))
-		this->dirY = MIN(this->dirY + 1, 1);
+		dirY = MIN(dirY + 1, 1);
 
 	if (engine->GetKey('w'))
-		this->dirY = MAX(this->dirY - 1, -1);
+		dirY = MAX(dirY - 1, -1);
 
-	if (this->ticksSinceLastStep >= this->speed) {
-		this->posX += this->dirX;
-		this->posY += this->dirY;
-		this->ticksSinceLastStep = 0;
+	if (ticksSinceLastStep >= speed) {
+		posX += dirX;
+		posY += dirY;
+		ticksSinceLastStep = 0;
 	}
 
-	if (engine->GetKey(KEY_UP)) {
-		Fireball *f = new Fireball(this->posX, this->posY - 1, 0, -1);
-		engine->GetCurLevel()->SpawnEntity(f);
-	}
+	ticksSinceLastStep++;
 
-	if (engine->GetKey(KEY_LEFT)) {
-		Fireball *f = new Fireball(this->posX - 1, this->posY, -1, 0);
-		engine->GetCurLevel()->SpawnEntity(f);
-	}
-
-	if (engine->GetKey(KEY_RIGHT)) {
-		Fireball *f = new Fireball(this->posX + 1, this->posY, +1, 0);
-		engine->GetCurLevel()->SpawnEntity(f);
-	}
-
-	if (engine->GetKey(KEY_DOWN)) {
-		Fireball *f = new Fireball(this->posX, this->posY + 1, 0, +1);
-		engine->GetCurLevel()->SpawnEntity(f);
-	}
-
-	this->ticksSinceLastStep++;
-
-	engine->log << "playerPos: " << this->posX << ", " << this->posY << std::endl;
-	engine->log << "playerDir: " << this->dirX << ", " << this->dirY << std::endl;
+	engine->log << "playerPos: " << posX << ", " << posY << std::endl;
+	engine->log << "playerDir: " << dirX << ", " << dirY << std::endl;
 }
 
 void Player::Render(Buffer *buffer) const {
-	buffer->DrawChar(this->posY + this->level->GetOffY(), this->posX + this->level->GetOffX(), 'X', COLOR_BLUE);
+	buffer->DrawChar(posY + level->GetOff().first, posX + level->GetOff().second, 'X', COLOR_BLUE);
 }

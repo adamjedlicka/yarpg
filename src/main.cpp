@@ -17,7 +17,6 @@ int main() {
 	l1->SpawnPlayer(p);
 
 	e.LoadLevel(l1);
-
 	e.Start();
 
 	return 0;

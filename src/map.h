@@ -1,8 +1,8 @@
 #ifndef __MAP_H
 #define __MAP_H
 
-#include <vector>
 #include <sstream>
+#include <vector>
 
 #include "engine.h"
 #include "structure.h"
@@ -11,25 +11,22 @@ class Map : public Level {
   protected:
 	std::string name;
 	int height, width;
-	int offX, offY;
 	int spawnX, spawnY;
 
 	Entity *player;
 	std::vector< Entity * > entities;
-	Structure ** structures;
+	Structure **structures;
 
   public:
 	Map(const std::string &);
-	~Map();
+	virtual ~Map();
+
+	virtual void Tick(Engine *);
+	virtual void Render(Buffer *) const;
 
 	bool LoadFromFile(const std::string &);
 	void SpawnPlayer(Entity *);
 	void SpawnEntity(Entity *);
-
-	void Tick(Engine *);
-	void Render(Buffer *) const;
-	int GetOffX() const { return this->offX; };
-	int GetOffY() const { return this->offY; };
 };
 
 #endif

@@ -1,70 +1,69 @@
 #include "engine.h"
 
 Engine::Engine() {
-	this->window = initscr();
-	nodelay(this->window, true);
-	keypad(this->window, true);
+	window = initscr();
+	nodelay(window, true);
+	keypad(window, true);
 	noecho();
 	cbreak();
 	timeout(1);
-	wtimeout(this->window, 1);
+	wtimeout(window, 1);
 	curs_set(false);
 
-	this->_COLOR = has_colors();
-	if (this->_COLOR) {
+	_COLOR = has_colors();
+	if (_COLOR) {
 		start_color();
 		init_pair(1, COLOR_WHITE, COLOR_BLACK); // fixes a bug with blinking text
 	}
 
-	this->maxHeight = getmaxy(this->window);
-	this->maxWidth = getmaxx(this->window);
+	maxHeight = getmaxy(window);
+	maxWidth = getmaxx(window);
 	for (int i = 0; i < MAX_BUFFERS; ++i)
-		this->buffers[i] = new Buffer(this->maxWidth, this->maxHeight);
+		buffers[i] = new Buffer(maxWidth, maxHeight);
 
-	this->active = false;
-	this->debug = false;
-	this->tickCount = 0;
+	active = false;
+	debug = false;
+	tickCount = 0;
 }
 
 Engine::~Engine() { endwin(); }
 
 void Engine::Start() {
-	this->active = true;
-	this->loop();
+	active = true;
+	loop();
 }
 
-void Engine::Stop() { this->active = false; }
+void Engine::Stop() { active = false; }
 
-bool Engine::LoadLevel(Level *level) {
-	this->level = level;
-
+bool Engine::LoadLevel(Level *lvl) {
+	level = lvl;
 	return true;
 }
 
-Buffer *Engine::GetCurBuffer() { return this->buffers[0]; }
+Buffer *Engine::GetCurBuffer() { return buffers[0]; }
 
 Buffer::Buffer() {}
 
-Buffer::Buffer(int width, int height) {
-	this->width = width;
-	this->height = height;
-	this->canvas = new Cell *[height];
+Buffer::Buffer(int w, int h) {
+	width = w;
+	height = h;
+	canvas = new Cell *[height];
 	for (int i = 0; i < height; ++i)
-		this->canvas[i] = new Cell[width];
+		canvas[i] = new Cell[width];
 }
 
 Buffer::~Buffer() {
-	for (int i = 0; i < this->height; ++i)
-		delete[] this->canvas[i];
-	delete[] this->canvas;
+	for (int i = 0; i < height; ++i)
+		delete[] canvas[i];
+	delete[] canvas;
 }
 
-void Buffer::DrawChar(int height, int width, char c) { this->DrawChar(height, width, c, COLOR_WHITE, COLOR_BLACK); }
-void Buffer::DrawChar(int height, int width, char c, short fg) { this->DrawChar(height, width, c, fg, COLOR_BLACK); }
-void Buffer::DrawChar(int height, int width, char c, short fg, short bg) {
-	if (height < 0 || width < 0)
+void Buffer::DrawChar(int x, int y, char c) { DrawChar(x, y, c, COLOR_WHITE, COLOR_BLACK); }
+void Buffer::DrawChar(int x, int y, char c, short fg) { DrawChar(x, y, c, fg, COLOR_BLACK); }
+void Buffer::DrawChar(int x, int y, char c, short fg, short bg) {
+	if (x < 0 || y < 0)
 		return;
-	if (height >= this->height || width >= this->width)
+	if (x >= width || y >= height)
 		return;
 
 	switch (c) {
@@ -72,14 +71,14 @@ void Buffer::DrawChar(int height, int width, char c, short fg, short bg) {
 	case '\t':
 		break;
 	default:
-		this->canvas[height][width].ch = c;
-		this->canvas[height][width].fg = fg;
-		this->canvas[height][width].bg = bg;
+		canvas[y][x].ch = c;
+		canvas[y][x].fg = fg;
+		canvas[y][x].bg = bg;
 		break;
 	}
 }
 
-void Buffer::DrawString(int height, int width, const std::string &str) {
+void Buffer::DrawString(int width, int height, const std::string &str) {
 	int w = 0;
 	int h = 0;
 	for (unsigned int i = 0; i < str.length(); ++i) {
@@ -88,16 +87,16 @@ void Buffer::DrawString(int height, int width, const std::string &str) {
 			w = 0;
 			continue;
 		}
-		this->DrawChar(height + h, width + w++, str[i]);
+		DrawChar(width + w++, height + h, str[i]);
 	}
 }
 
 void Buffer::ClearCanvas() {
-	for (int i = 0; i < this->height; ++i) {
-		for (int j = 0; j < this->width; j++) {
-			this->canvas[i][j].ch = ' ';
-			this->canvas[i][j].fg = COLOR_WHITE;
-			this->canvas[i][j].bg = COLOR_BLACK;
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; j++) {
+			canvas[i][j].ch = ' ';
+			canvas[i][j].fg = COLOR_WHITE;
+			canvas[i][j].bg = COLOR_BLACK;
 		}
 	}
 }
@@ -105,18 +104,18 @@ void Buffer::ClearCanvas() {
 void Engine::loop() {
 	clock_t drawTime = clock();
 
-	while (this->active) {
+	while (active) {
 		// Store all key presses in keyboard for future querries
 		int c = 0;
 		for (int i = 0; i < MAX_KEYS; ++i)
-			this->keys[i] = false;
+			keys[i] = false;
 		while (c = getch(), c != ERR)
-			this->keys[c] = true;
+			keys[c] = true;
 
 		// Game logic and rendering
-		this->tick();
-		this->tickCount++;
-		this->render();
+		tick();
+		tickCount++;
+		render();
 
 		// Calculate sleep time for the rest of the frame, to save CPU load
 		clock_t now = clock();
@@ -127,27 +126,27 @@ void Engine::loop() {
 }
 
 void Engine::tick() {
-	if (this->GetKey(KEY_F(2)))
-		this->debug = !this->debug;
+	if (GetKey(KEY_F(2)))
+		debug = !debug;
 
-	this->log << "tickCount: " << this->tickCount << std::endl; // DEBUG
+	log << "tickCount: " << tickCount << std::endl; // DEBUG
 
-	if (this->level)
-		this->level->Tick(this);
+	if (level)
+		level->Tick(this);
 }
 
 void Engine::render() {
-	Buffer *buf = this->GetCurBuffer();
+	Buffer *buf = GetCurBuffer();
 	buf->ClearCanvas();
 
 	attron(COLOR_PAIR(1));
 
-	if (this->level)
-		this->level->Render(buf);
+	if (level)
+		level->Render(buf);
 
-	if (this->debug)
-		buf->DrawString(0, 0, this->log.str());
-	this->log.str("");
+	if (debug)
+		buf->DrawString(0, 0, log.str());
+	log.str("");
 
 	int usedColorPairs = 1; // 1 because we already initialized
 	for (int i = 0; i < buf->GetHeight(); ++i) {
@@ -155,7 +154,7 @@ void Engine::render() {
 		for (int j = 0; j < buf->GetWidth(); ++j) {
 
 			int index = 1;
-			if (this->_COLOR) {
+			if (_COLOR) {
 				short fg, bg;
 				for (int i = 1; i <= usedColorPairs; ++i) {
 					pair_content(i, &fg, &bg);
@@ -179,9 +178,9 @@ void Engine::render() {
 
 	attron(COLOR_PAIR(1));
 
-	if (this->_COLOR) {
-		this->log << "max color_pairs: " << COLOR_PAIRS - 1 << std::endl;
-		this->log << "used color_pairs: " << usedColorPairs << std::endl;
+	if (_COLOR) {
+		log << "max color_pairs: " << COLOR_PAIRS - 1 << std::endl;
+		log << "used color_pairs: " << usedColorPairs << std::endl;
 	}
 
 	refresh();

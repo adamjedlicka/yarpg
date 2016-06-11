@@ -4,29 +4,12 @@
 #include "engine.h"
 
 class Wall : public Structure {
-  private:
-	int posY, posX;
-
-	Level *level;
-
   public:
-	Wall(int, int, Level *);
-	~Wall();
+	Wall(Level *, int, int);
+	virtual ~Wall();
 
-	void Tick(Engine *);
-	void Render(Buffer *) const;
-
-	std::pair< int, int > GetPos() const { return std::make_pair(this->posX, this->posY); };
-
-	Level *GetLevel() const { return this->level; }
-	void SetLevel(Level *level) { this->level = level; }
-
-	void SetXY(int x, int y) {
-		this->posX = x;
-		this->posY = y;
-	}
-
-	void Colide(Entity *);
+	virtual void Render(Buffer *) const;
+	virtual void Colide(Entity *);
 };
 
 #endif
