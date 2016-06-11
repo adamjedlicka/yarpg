@@ -109,6 +109,7 @@ class Entity : public Drawable {
 	virtual void Colide(Entity *){};
 	virtual void Colide(Structure *){};
 	virtual bool IsPlayer() { return false; };
+	virtual bool IsSolid() { return false; };
 
 	std::pair< int, int > GetPos() { return std::make_pair(posX, posY); };
 	void SetPos(int x, int y) { posX = x, posY = y; }
@@ -140,11 +141,11 @@ class Structure : public Drawable {
 	bool destroyed;
 
   public:
-	Structure(){};
 	Structure(Level *lvl, int x, int y) { level = lvl, posX = x, posY = y; };
 	virtual ~Structure(){};
 
 	virtual void Colide(Entity *){};
+	virtual bool IsSolid() { return true; };
 
 	std::pair< int, int > GetPos() { return std::make_pair(posX, posY); };
 	void SetPos(int x, int y) { posX = x, posY = y; }

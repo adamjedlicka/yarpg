@@ -13,17 +13,16 @@ class Player : public Entity {
 	// state
 	int ticksSinceLastStep;
 
-	Level *level;
-
   public:
 	Player(const std::string &);
-	~Player();
+	virtual ~Player();
 
-	void Tick(Engine *);
-	void Render(Buffer *) const;
-
-	void Colide(Entity *){};
-	void Colide(Structure *){};
+	virtual void Tick(Engine *);
+	virtual void Render(Buffer *) const;
+	virtual void Colide(Entity *);
+	virtual void Colide(Structure *);
+	virtual bool IsPlayer() { return true; };
+	virtual bool IsSolid() { return true; };
 };
 
 #endif

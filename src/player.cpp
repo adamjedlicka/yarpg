@@ -39,5 +39,13 @@ void Player::Tick(Engine *engine) {
 }
 
 void Player::Render(Buffer *buffer) const {
-	buffer->DrawChar(posY + level->GetOff().first, posX + level->GetOff().second, 'X', COLOR_BLUE);
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, 'X', COLOR_BLUE);
 }
+
+void Player::Colide(Structure *s) {
+	if (s->IsSolid()) {
+		dirX = 0, dirY = 0;
+	}
+}
+
+void Player::Colide(Entity *e) {}
