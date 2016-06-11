@@ -58,7 +58,10 @@ void Map::Tick(Engine *engine) {
 	for (int i = 0; i < entitiesCnt; ++i) {
 		entities[i]->Tick(engine);
 		std::pair< int, int > pos = entities[i]->GetPos();
-		if (structures[pos.second][pos.first] != NULL) {
+		if (!entities[i]->IsPlayer() && (pos.first < 0 || pos.second < 0 || pos.first >= width || pos.second >= height))
+			entities[i]->Destroy(); // out of the map*/
+
+		if (!entities[i]->Destroyed() && structures[pos.second][pos.first] != NULL) {
 			structures[pos.second][pos.first]->Colide(entities[i]);
 			entities[i]->Colide(structures[pos.second][pos.first]);
 		}
