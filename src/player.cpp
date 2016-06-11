@@ -35,5 +35,5 @@ void Player::Tick(Engine *engine) {
 }
 
 void Player::Render(Buffer *buffer) const {
-	buffer->DrawChar(this->posY + this->level->GetOffY(), this->posX + this->level->GetOffX(), 'X');
+	buffer->DrawChar(this->posY + this->level->GetOffY(), this->posX + this->level->GetOffX(), 'X', COLOR_RED);
 }

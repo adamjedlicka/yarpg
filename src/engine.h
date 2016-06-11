@@ -15,6 +15,7 @@
 #define MAX_FPS 30	// Maximum FPS. Used to calculate sleep time between frames
 #define MAX_KEYS 512  // Maximum number of keys ncurses can return
 #define MAX_BUFFERS 1 // Maximum number of screen buffers engine can handle
+#define COLOR_INDEX 1
 
 class Drawable;
 class Level;
@@ -36,6 +37,8 @@ class Engine {
 	Level *level;
 
   public:
+	bool _COLOR;
+
 	std::ostringstream log;
 
 	Engine();
@@ -55,9 +58,14 @@ class Engine {
 	void render();
 };
 
+struct Cell {
+	char ch;
+	short fg, bg;
+};
+
 class Buffer {
   private:
-	char **canvas;
+	Cell **canvas;
 	int width, height;
 
   public:
@@ -65,14 +73,16 @@ class Buffer {
 	Buffer(int, int);
 	~Buffer();
 
-	void DrawChar(int, int, char);
+	void DrawChar(int, int, char);				 // position & char
+	void DrawChar(int, int, char, short);		 // position, char and foreground color
+	void DrawChar(int, int, char, short, short); // position, char, foreground and background color
 	void DrawString(int, int, const std::string &);
 	void ClearCanvas();
 
 	int GetWidth() const { return this->width; };
 	int GetHeight() const { return this->height; };
-	char GetChar(int h, int w) const { return this->canvas[h][w]; };
-	const char *GetLine(int h) const { return this->canvas[h]; };
+	char GetChar(int h, int w) const { return this->canvas[h][w].ch; };
+	const Cell *GetLine(int h) const { return this->canvas[h]; };
 };
 
 class Drawable {

@@ -10,6 +10,12 @@ Engine::Engine() {
 	wtimeout(this->window, 1);
 	curs_set(false);
 
+	this->_COLOR = has_colors();
+	if (this->_COLOR) {
+		start_color();
+		init_pair(1, COLOR_WHITE, COLOR_BLACK); // fixes a bug with blinking text
+	}
+
 	this->maxHeight = getmaxy(this->window);
 	this->maxWidth = getmaxx(this->window);
 	for (int i = 0; i < MAX_BUFFERS; ++i)
@@ -42,9 +48,9 @@ Buffer::Buffer() {}
 Buffer::Buffer(int width, int height) {
 	this->width = width;
 	this->height = height;
-	this->canvas = new char *[height];
+	this->canvas = new Cell *[height];
 	for (int i = 0; i < height; ++i)
-		this->canvas[i] = new char[width];
+		this->canvas[i] = new Cell[width];
 }
 
 Buffer::~Buffer() {
@@ -53,7 +59,9 @@ Buffer::~Buffer() {
 	delete[] this->canvas;
 }
 
-void Buffer::DrawChar(int height, int width, char c) {
+void Buffer::DrawChar(int height, int width, char c) { this->DrawChar(height, width, c, COLOR_WHITE, COLOR_BLACK); }
+void Buffer::DrawChar(int height, int width, char c, short fg) { this->DrawChar(height, width, c, fg, COLOR_BLACK); }
+void Buffer::DrawChar(int height, int width, char c, short fg, short bg) {
 	if (height < 0 || width < 0)
 		return;
 	if (height >= this->height || width >= this->width)
@@ -64,7 +72,10 @@ void Buffer::DrawChar(int height, int width, char c) {
 	case '\t':
 		break;
 	default:
-		this->canvas[height][width] = c;
+		this->canvas[height][width].ch = c;
+		this->canvas[height][width].fg = fg;
+		this->canvas[height][width].bg = bg;
+		break;
 	}
 }
 
@@ -84,7 +95,9 @@ void Buffer::DrawString(int height, int width, const std::string &str) {
 void Buffer::ClearCanvas() {
 	for (int i = 0; i < this->height; ++i) {
 		for (int j = 0; j < this->width; j++) {
-			this->canvas[i][j] = ' ';
+			this->canvas[i][j].ch = ' ';
+			this->canvas[i][j].fg = COLOR_WHITE;
+			this->canvas[i][j].bg = COLOR_BLACK;
 		}
 	}
 }
@@ -127,6 +140,8 @@ void Engine::render() {
 	Buffer *buf = this->GetCurBuffer();
 	buf->ClearCanvas();
 
+	attron(COLOR_PAIR(1));
+
 	if (this->level)
 		this->level->Render(buf);
 
@@ -134,8 +149,39 @@ void Engine::render() {
 		buf->DrawString(0, 0, this->log.str());
 	this->log.str("");
 
+	int usedColorPairs = 1; // 1 because we already initialized
 	for (int i = 0; i < buf->GetHeight(); ++i) {
-		mvprintw(i, 0, buf->GetLine(i));
+		const Cell *line = buf->GetLine(i);
+		for (int j = 0; j < buf->GetWidth(); ++j) {
+
+			int index = 1;
+			if (this->_COLOR) {
+				short fg, bg;
+				for (int i = 1; i <= usedColorPairs + 1; ++i) {
+					pair_content(i, &fg, &bg);
+					if (fg == line[j].fg && bg == line[j].bg) {
+						index = i;
+						break;
+					}
+					if (i == usedColorPairs + 1) {
+						index = ++usedColorPairs;
+						init_pair(index, line[j].fg, line[j].bg);
+						break;
+					}
+				}
+			}
+
+			attron(COLOR_PAIR(index));
+			mvaddch(i, j, line[j].ch);
+			attroff(COLOR_PAIR(index));
+		}
+	}
+
+	attron(COLOR_PAIR(1));
+
+	if (this->_COLOR) {
+		this->log << "max color_pairs: " << COLOR_PAIRS - 1 << std::endl;
+		this->log << "used color_pairs: " << usedColorPairs << std::endl;
 	}
 
 	refresh();
