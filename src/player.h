@@ -7,10 +7,11 @@ class Player : public Entity {
   protected:
 	std::string name;
 	int posY, posX;
-	
+	int dirY, dirX;
+
 	// stats
 	int speed;
-	
+
 	// state
 	int ticksSinceLastStep;
 
@@ -23,8 +24,8 @@ class Player : public Entity {
 	void Tick(Engine *);
 	void Render(Buffer *) const;
 
-	int GetPosY() const { return this->posY; };
-	int GetPosX() const { return this->posX; };
+	std::pair< int, int > GetPos() const { return std::make_pair(this->posX, this->posY); };
+	std::pair< int, int > GetDir() const { return std::make_pair(this->dirX, this->dirY); };
 
 	Level *GetLevel() const { return this->level; }
 	void SetLevel(Level *level) { this->level = level; }
@@ -33,6 +34,9 @@ class Player : public Entity {
 		this->posX = x;
 		this->posY = y;
 	}
+
+	void Colide(Entity *){};
+	void Colide(Structure *){};
 };
 
 #endif

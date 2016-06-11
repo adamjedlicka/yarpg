@@ -12,10 +12,12 @@
 
 #include <ncurses.h>
 
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
+
 #define MAX_FPS 30	// Maximum FPS. Used to calculate sleep time between frames
 #define MAX_KEYS 512  // Maximum number of keys ncurses can return
 #define MAX_BUFFERS 1 // Maximum number of screen buffers engine can handle
-#define COLOR_INDEX 1
 
 class Drawable;
 class Level;
@@ -94,10 +96,12 @@ class Drawable {
 class Entity : public Drawable {
   public:
 	virtual Level *GetLevel() const = 0;
-	virtual int GetPosX() const = 0;
-	virtual int GetPosY() const = 0;
+	virtual std::pair< int, int > GetPos() const = 0; // position of the entity
+	virtual std::pair< int, int > GetDir() const = 0; // direction in which the entity is moving
 	virtual void SetLevel(Level *) = 0;
 	virtual void SetXY(int, int) = 0;
+	virtual void Colide(Entity *) = 0;
+	virtual void Colide(Structure *) = 0;
 };
 
 class Level : public Drawable {
@@ -109,10 +113,10 @@ class Level : public Drawable {
 class Structure : public Drawable {
   public:
 	virtual Level *GetLevel() const = 0;
-	virtual int GetPosX() const = 0;
-	virtual int GetPosY() const = 0;
+	virtual std::pair< int, int > GetPos() const = 0;
 	virtual void SetLevel(Level *) = 0;
 	virtual void SetXY(int, int) = 0;
+	virtual void Colide(Entity *) = 0;
 };
 
 #endif

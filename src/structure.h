@@ -16,8 +16,7 @@ class Wall : public Structure {
 	void Tick(Engine *);
 	void Render(Buffer *) const;
 
-	int GetPosY() const { return this->posY; };
-	int GetPosX() const { return this->posX; };
+	std::pair< int, int > GetPos() const { return std::make_pair(this->posX, this->posY); };
 
 	Level *GetLevel() const { return this->level; }
 	void SetLevel(Level *level) { this->level = level; }
@@ -26,6 +25,8 @@ class Wall : public Structure {
 		this->posX = x;
 		this->posY = y;
 	}
+
+	void Colide(Entity *);
 };
 
 #endif

@@ -16,7 +16,7 @@ class Map : public Level {
 
 	Entity *player;
 	std::vector< Entity * > entities;
-	std::vector< Structure * > structures;
+	Structure ** structures;
 
   public:
 	Map(const std::string &);

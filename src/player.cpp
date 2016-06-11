@@ -13,25 +13,31 @@ Player::Player(const std::string &name) : Entity() {
 Player::~Player() {}
 
 void Player::Tick(Engine *engine) {
-	if (engine->GetKey(KEY_RIGHT) && this->ticksSinceLastStep >= this->speed) {
-		this->posX++;
+	this->dirX = 0;
+	this->dirY = 0;
+
+	if (engine->GetKey(KEY_RIGHT))
+		this->dirX = MIN(this->dirX + 1, 1);
+
+	if (engine->GetKey(KEY_LEFT))
+		this->dirX = MAX(this->dirX - 1, -1);
+
+	if (engine->GetKey(KEY_DOWN))
+		this->dirY = MIN(this->dirY + 1, 1);
+
+	if (engine->GetKey(KEY_UP))
+		this->dirY = MAX(this->dirY - 1, -1);
+
+	if(this->ticksSinceLastStep >= this->speed) {
+		this->posX += this->dirX;
+		this->posY += this->dirY;
 		this->ticksSinceLastStep = 0;
 	}
-	if (engine->GetKey(KEY_LEFT) && this->ticksSinceLastStep >= this->speed) {
-		this->posX--;
-		this->ticksSinceLastStep = 0;
-	}
-	if (engine->GetKey(KEY_DOWN) && this->ticksSinceLastStep >= this->speed) {
-		this->posY++;
-		this->ticksSinceLastStep = 0;
-	}
-	if (engine->GetKey(KEY_UP) && this->ticksSinceLastStep >= this->speed) {
-		this->posY--;
-		this->ticksSinceLastStep = 0;
-	}
+
 	this->ticksSinceLastStep++;
 
-	engine->log << "playerCoords: " << this->posX << ", " << this->posY << std::endl;
+	engine->log << "playerPos: " << this->posX << ", " << this->posY << std::endl;
+	engine->log << "playerDir: " << this->dirX << ", " << this->dirY << std::endl;
 }
 
 void Player::Render(Buffer *buffer) const {
