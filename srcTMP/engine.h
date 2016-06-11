@@ -23,6 +23,7 @@ class Drawable;
 class Level;
 class Entity;
 class Structure;
+
 class Buffer;
 
 class Engine {
@@ -49,8 +50,6 @@ class Engine {
 	void Stop();
 
 	bool LoadLevel(Level *);
-
-	std::pair< int, int > Direction(int, int, int, int);
 
 	Buffer *GetCurBuffer();
 	bool GetKey(int i) { return keys[i]; };
@@ -120,12 +119,7 @@ class Entity : public Drawable {
 	Level *GetLevel() { return level; };
 	void SetLevel(Level *lvl) { level = lvl; };
 	bool Destroyed() { return destroyed; }
-	void Destroy() {
-		if (!destroyed) {
-			OnDestroy();
-			destroyed = true;
-		}
-	};
+	void Destroy() { !destroyed ? OnDestroy(), destroyed = true : true; };
 };
 
 class Level : public Drawable {

@@ -13,5 +13,4 @@ void Wall::Colide(Entity *e) {
 	std::pair< int, int > eDir = e->GetDir();
 
 	e->SetPos(ePos.first - eDir.first, ePos.second - eDir.second);
-	e->SetDir(0, 0);
 }

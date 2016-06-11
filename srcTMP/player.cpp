@@ -13,10 +13,17 @@ Player::Player(const std::string &str) : Entity(0, 0) {
 Player::~Player() {}
 
 void Player::Tick(Engine *engine) {
-	std::pair< int, int > dir = engine->Direction('w', 'a', 's', 'd');
-	dirX += dir.first, dirY += dir.second;
-	dirX = MAX(dirX, -1), dirX = MIN(dirX, 1);
-	dirY = MAX(dirY, -1), dirY = MIN(dirY, 1);
+	if (engine->GetKey('d'))
+		dirX = MIN(dirX + 1, 1);
+
+	if (engine->GetKey('a'))
+		dirX = MAX(dirX - 1, -1);
+
+	if (engine->GetKey('s'))
+		dirY = MIN(dirY + 1, 1);
+
+	if (engine->GetKey('w'))
+		dirY = MAX(dirY - 1, -1);
 
 	if (ticksSinceLastStep >= speed) {
 		posX += dirX;
@@ -24,9 +31,14 @@ void Player::Tick(Engine *engine) {
 		ticksSinceLastStep = 0;
 	}
 
-	dir = engine->Direction(KEY_UP, KEY_LEFT, KEY_DOWN, KEY_RIGHT);
-	if (dir.first != 0 || dir.second != 0)
-		engine->GetCurLevel()->SpawnEntity(new Fireball(posX + dir.first, posY + dir.second, dir.first, dir.second));
+	if (engine->GetKey(KEY_RIGHT))
+		engine->GetCurLevel()->SpawnEntity(new Fireball(posX + 1, posY, 1, 0));
+	if (engine->GetKey(KEY_LEFT))
+		engine->GetCurLevel()->SpawnEntity(new Fireball(posX - 1, posY, -1, 0));
+	if (engine->GetKey(KEY_UP))
+		engine->GetCurLevel()->SpawnEntity(new Fireball(posX, posY - 1, 0, -1));
+	if (engine->GetKey(KEY_DOWN))
+		engine->GetCurLevel()->SpawnEntity(new Fireball(posX, posY + 1, 0, 1));
 
 	ticksSinceLastStep++;
 

@@ -24,7 +24,6 @@ class Player : public Entity {
 	virtual void Colide(Structure *);
 	virtual bool IsPlayer() { return true; };
 	virtual bool IsSolid() { return true; };
-	virtual bool Destroyed() { return false; };
 };
 
 #endif

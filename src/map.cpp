@@ -4,22 +4,27 @@ Map::Map(const std::string &str) {
 	offX = 0;
 	offY = 0;
 	name = str;
+
+	entities = new Entity *[ENTITY_MAX];
+	entitiesCnt = 0;
 }
 
 Map::~Map() {}
 
 bool Map::LoadFromFile(const std::string &path) {
-	height = 10;
-	width = 20;
-	spawnX = 10;
-	spawnY = 5;
+	height = 20;
+	width = 40;
+	spawnX = 20;
+	spawnY = 10;
 
-	structures = new Structure *[height * width];
+	structures = new Structure **[height];
+	for (int i = 0; i < height; ++i)
+		structures[i] = new Structure *[width];
+
 	for (int i = 0; i < height; ++i) {
-		for (int j = 0; j < width; ++j) {
-			if ((i == 0 || j == 0) && structures[i * width + j] == NULL) {
-				structures[i * width + j] = new Wall(this, j, i);
-			}
+		for (int j = 0; j < width; j++) {
+			if ((i == 0 || j == 0 || i == height - 1 || j == width - 1) && structures[i][j] == NULL)
+				structures[i][j] = new Wall(this, j, i);
 		}
 	}
 
@@ -30,71 +35,69 @@ void Map::SpawnPlayer(Entity *e) {
 	player = e;
 	player->SetLevel(this);
 	player->SetPos(spawnX, spawnY);
-	entities.push_back(e);
+	entities[entitiesCnt++] = player;
 }
 
-void Map::SpawnEntity(Entity *entity) {
-	std::pair< int, int > pos = entity->GetPos();
-	if (pos.first < 0 || pos.first >= width || pos.second < 0 || pos.second >= height) {
-		delete entity;
+void Map::SpawnEntity(Entity *e) {
+	std::pair< int, int > pos = e->GetPos();
+	if ((pos.first < 0 || pos.second < 0 || pos.first >= width || pos.second >= height) && (entitiesCnt < ENTITY_MAX)) {
+		delete e;
 		return;
 	}
 
-	entity->SetLevel(this);
-	entities.push_back(entity);
+	e->SetLevel(this);
+	entities[entitiesCnt++] = e;
 }
 
 void Map::Tick(Engine *engine) {
-	for (Entity *e : entities) {
-		std::pair< int, int > pos = e->GetPos();
-		std::pair< int, int > dir = e->GetDir();
-		int posX = pos.first + dir.first;
-		int posY = pos.second + dir.second;
+	for (int i = 0; i < height; ++i)
+		for (int j = 0; j < width; j++)
+			if (structures[i][j] != NULL)
+				structures[i][j]->Tick(engine);
 
-		if (posX < 0 || posY < 0 || posX >= width || posY >= height) {
-			e->Destroy(); // entity is out of the map
-			continue;
-		}
-
-		if (structures[posY * width + posX] != NULL) { // there will be a colision next tick
-			e->Colide(structures[posY * width + posX]);
+	for (int i = 0; i < entitiesCnt; ++i) {
+		entities[i]->Tick(engine);
+		std::pair< int, int > pos = entities[i]->GetPos();
+		if (structures[pos.second][pos.first] != NULL) {
+			structures[pos.second][pos.first]->Colide(entities[i]);
+			entities[i]->Colide(structures[pos.second][pos.first]);
 		}
 	}
 
-	for (Entity *e : entities)
-		e->Tick(engine);
+	offX = (engine->GetCurBuffer()->GetWidth() / 2) - player->GetPos().first;
+	offY = (engine->GetCurBuffer()->GetHeight() / 2) - player->GetPos().second;
 
-	for (int i = 0; i < height * width; ++i)
-		if (structures[i] != NULL)
-			structures[i]->Tick(engine);
-
-	for (Entity *e : entities) {
-		std::pair< int, int > pos = e->GetPos();
-
-		if (pos.first < 0 || pos.second < 0 || pos.first >= width || pos.second >= height) {
-			e->Destroy();
-			continue;
-		}
-
-		if (structures[pos.second * width + pos.first] != NULL) {
-			structures[pos.second * width + pos.first]->Colide(e);
+	for (int i = 0; i < entitiesCnt; ++i) {
+		if (entities[i]->Destroyed()) {
+			delete entities[i];
+			entities[i] = NULL;
 		}
 	}
+	Entity **entitiesNEW = new Entity *[ENTITY_MAX];
+	int tmp = 0;
+	for (int i = 0; i < entitiesCnt; ++i) {
+		if (entities[i] != NULL) {
+			entitiesNEW[tmp++] = entities[i];
+		}
+	}
+	entitiesCnt = tmp;
+	entities = entitiesNEW;
 
-	this->offX = (engine->GetCurBuffer()->GetWidth() / 2) - this->player->GetPos().first;
-	this->offY = (engine->GetCurBuffer()->GetHeight() / 2) - this->player->GetPos().second;
-
-	engine->log << "mapName: " << this->name << ", offsets: " << this->offX << ", " << this->offX << std::endl;
-	engine->log << "entityCnt: " << this->entities.size() << std::endl;
+	engine->log << "mapName: " << name << ", offsets: " << offX << ", " << offX << std::endl;
+	engine->log << "entityCnt: " << entitiesCnt << std::endl;
 }
 
 void Map::Render(Buffer *buffer) const {
-	for (int i = 0; i < height * width; ++i) {
-		if (structures[i] != NULL) {
-			structures[i]->Render(buffer);
-		}
-	}
+	buffer->ClearCanvas();
 
-	if (player != NULL)
-		player->Render(buffer);
+	for (int i = 0; i < height; ++i)
+		for (int j = 0; j < width; j++)
+			if (structures[i][j] != NULL)
+				structures[i][j]->Render(buffer);
+
+	for (int i = 1; i < entitiesCnt; ++i)
+		entities[i]->Render(buffer);
+
+	if (entities[0])
+		entities[0]->Render(buffer);
 }

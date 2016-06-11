@@ -7,8 +7,6 @@
 #include "engine.h"
 #include "structure.h"
 
-#define ENTITY_MAX 1024
-
 class Map : public Level {
   protected:
 	std::string name;
@@ -16,9 +14,8 @@ class Map : public Level {
 	int spawnX, spawnY;
 
 	Entity *player;
-	Entity **entities;
-	int entitiesCnt;
-	Structure ***structures;
+	std::vector< Entity * > entities;
+	std::vector< Structure * > structures;
 
   public:
 	Map(const std::string &);

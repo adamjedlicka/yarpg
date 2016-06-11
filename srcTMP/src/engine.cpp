@@ -40,20 +40,6 @@ bool Engine::LoadLevel(Level *lvl) {
 	return true;
 }
 
-std::pair< int, int > Engine::Direction(int up, int left, int down, int right) {
-	std::pair< int, int > p = std::make_pair(0, 0);
-	if (GetKey(right))
-		p.first++;
-	if (GetKey(left))
-		p.first--;
-	if (GetKey(down))
-		p.second++;
-	if (GetKey(up))
-		p.second--;
-
-	return p;
-}
-
 Buffer *Engine::GetCurBuffer() { return buffers[0]; }
 
 Buffer::Buffer() {}
@@ -134,9 +120,7 @@ void Engine::loop() {
 		// Calculate sleep time for the rest of the frame, to save CPU load
 		clock_t now = clock();
 		double tm = double(now - drawTime) / CLOCKS_PER_SEC;
-		double sleep = (1.0 / MAX_FPS - tm) * 1000000;
-		if (sleep > 0)
-			usleep(sleep);
+		usleep((1.0 / MAX_FPS - tm) * 1000000);
 		drawTime = clock();
 	}
 }
