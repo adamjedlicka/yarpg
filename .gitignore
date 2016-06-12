@@ -32,3 +32,5 @@ build/
 srcTMP/
 
 log.txt
+log
+core
