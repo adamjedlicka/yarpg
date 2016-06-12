@@ -5,6 +5,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <sstream>
 #include <string>
 #include <unistd.h>
@@ -89,6 +90,31 @@ class Buffer {
 	const Cell *GetLine(int h) const { return canvas[h]; };
 };
 
+class SML_Fragment {
+  private:
+	std::map< std::string, std::string > data;
+
+  public:
+	SML_Fragment();
+	~SML_Fragment();
+
+	void AddValue(const std::string &);
+	std::string GetValue(const std::string &) const;
+	int GetValueAsInt(const std::string &) const;
+};
+
+class SML {
+  private:
+	std::map< std::string, SML_Fragment > data;
+
+  public:
+	SML();
+	~SML();
+
+	void ReadFile(const std::string &);
+	const SML_Fragment &GetFragment(const std::string &) const;
+};
+
 class Drawable {
   public:
 	virtual ~Drawable(){};
@@ -163,5 +189,8 @@ class Structure : public Drawable {
 	bool Destroyed() { return destroyed; }
 	void Destroy() { destroyed = true; };
 };
+
+// helper functions
+std::string GetPath();
 
 #endif

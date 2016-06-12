@@ -2,8 +2,12 @@
 #include "map.h"
 
 Map::Map(const std::string &str) {
+	height = 0;
+	width = 0;
 	offX = 0;
 	offY = 0;
+	spawnX = 0;
+	spawnY = 0;
 	name = str;
 
 	entities = new Entity *[ENTITY_MAX];
@@ -12,24 +16,36 @@ Map::Map(const std::string &str) {
 
 Map::~Map() {}
 
-bool Map::LoadFromFile(const std::string &path) {
-	height = 20;
-	width = 40;
-	spawnX = 20;
-	spawnY = 10;
+bool Map::LoadFromFile(const std::string &file) {
+	std::string path = GetPath() + "data/levels/" + file;
+
+	SML sml;
+	sml.ReadFile(path);
+
+	height = sml.GetFragment("global").GetValueAsInt("height");
+	width = sml.GetFragment("global").GetValueAsInt("width");
+	spawnX = sml.GetFragment("global").GetValueAsInt("spawnX");
+	spawnY = sml.GetFragment("global").GetValueAsInt("spawnY");
 
 	structures = new Structure **[height];
-	for (int i = 0; i < height; ++i)
+	for (int i = 0; i < height; ++i) {
 		structures[i] = new Structure *[width];
+		for (int j = 0; j < width; ++j)
+			structures[i][j] = NULL;
+	}
+
+	std::string map = sml.GetFragment("global").GetValue("map");
 
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; j++) {
-			if ((i == 0 || j == 0 || i == height - 1 || j == width - 1) && structures[i][j] == NULL)
+			char c = map[i * width + j];
+			switch (c) {
+			case 'X':
 				structures[i][j] = new Wall(this, j, i);
+				break;
+			}
 		}
 	}
-
-	SpawnEntity(new Skeleton(5, 10));
 
 	return true;
 }
@@ -61,7 +77,7 @@ void Map::Tick(Engine *engine) {
 	for (int i = 0; i < entitiesCnt; ++i) {
 		entities[i]->Tick(engine);
 		std::pair< int, int > pos = entities[i]->GetPos();
-		if (!entities[i]->IsPlayer() && (pos.first < 0 || pos.second < 0 || pos.first >= width || pos.second >= height))
+		if ((pos.first < 0 || pos.second < 0 || pos.first >= width || pos.second >= height))
 			entities[i]->Destroy(); // out of the map*/
 
 		if (!entities[i]->Destroyed() && structures[pos.second][pos.first] != NULL) {

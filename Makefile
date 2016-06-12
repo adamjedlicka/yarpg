@@ -2,7 +2,7 @@
 program = yarpg
 
 CC = g++
-CF = -std=c++11 -Wall -pedantic
+CF = -std=c++11 -Wall -pedantic -g
 CL = -lncurses
 
 src = src/main.cpp src/engine.cpp src/map.cpp src/player.cpp src/structure.cpp src/entity.cpp

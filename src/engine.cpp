@@ -5,10 +5,12 @@ Engine::Engine() {
 	nodelay(window, true);
 	keypad(window, true);
 	noecho();
-	cbreak();
-	timeout(1);
-	wtimeout(window, 1);
-	curs_set(false);
+	// cbreak();
+	// timeout(1);
+	// wtimeout(window, 1);
+	curs_set(0);
+	// raw();
+	// clear();
 
 	_COLOR = has_colors();
 	if (_COLOR) {
@@ -126,6 +128,8 @@ void Engine::loop() {
 		while (c = getch(), c != ERR)
 			keys[c] = true;
 
+		// erase();
+
 		// Game logic and rendering
 		tick();
 		tickCount++;
@@ -200,4 +204,81 @@ void Engine::render() {
 	}
 
 	refresh();
+}
+
+SML::SML() {}
+SML::~SML() {}
+
+void SML::ReadFile(const std::string &file) {
+	std::ifstream ifs;
+	ifs.open(file.c_str());
+
+	if (ifs.fail()) {
+		std::cout << file << " error..." << std::endl;
+		ifs.close();
+		return;
+	}
+
+	std::cout << file << " succesfully opened..." << std::endl;
+
+	char tmp[1024];
+	int tmp_len = 0;
+	std::stringstream ss;
+
+	std::string key = "global";
+
+	while (ifs.good()) {
+		ss.str("");
+		ifs.getline(tmp, 1024);
+		tmp_len = strlen(tmp);
+
+		while (tmp[tmp_len - 1] == '\\' && ifs.good()) {
+			tmp[tmp_len - 1] = '\0';
+			ss << tmp;
+			ifs.getline(tmp, 1024);
+			tmp_len = strlen(tmp);
+		}
+		ss << tmp;
+
+		if (data.find(key) == data.end())
+			data[key] = SML_Fragment();
+
+		data[key].AddValue(ss.str());
+	}
+
+	ifs.close();
+}
+
+const SML_Fragment &SML::GetFragment(const std::string &key) const { return data.find(key)->second; }
+
+SML_Fragment::SML_Fragment() {}
+SML_Fragment::~SML_Fragment() {}
+
+void SML_Fragment::AddValue(const std::string &raw) {
+	size_t index = raw.find(' ');
+	data[raw.substr(0, index)] = raw.substr(index + 3);
+}
+
+std::string SML_Fragment::GetValue(const std::string &key) const { return data.find(key)->second; }
+int SML_Fragment::GetValueAsInt(const std::string &key) const { return std::stoi(data.find(key)->second); }
+
+std::string GetPath() {
+	char pBuf[255];
+	short len = 255;
+
+	char szTmp[32];
+	sprintf(szTmp, "/proc/%d/exe", getpid());
+	int bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
+	if (bytes >= 0)
+		pBuf[bytes] = '\0';
+
+	for (int i = bytes; i > 0; --i) {
+		if (pBuf[i] == '/')
+			break;
+		else
+			pBuf[i] = '\0';
+	}
+
+	std::string path(pBuf);
+	return path;
 }

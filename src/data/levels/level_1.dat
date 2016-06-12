@@ -1,11 +1,14 @@
-10 10
-XXXXXXXXXX
-X________X
-XXXX_XX__X
-X_____X__X
-X_____XXXX
-X________X
-X________X
-XXX_XXXXXX
-XS_______X
+height = 10
+width = 10
+spawnX = 1
+spawnY = 8
+map = XXXXXXXXXX\
+X________X\
+XXXX_XX__X\
+X_____X__X\
+X_____XXXX\
+X________X\
+X________X\
+XXX_XXXXXX\
+X________X\
 XXXXXXXXXX

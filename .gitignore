@@ -29,5 +29,6 @@
 
 bin/
 build/
+srcTMP/
 
 log.txt
