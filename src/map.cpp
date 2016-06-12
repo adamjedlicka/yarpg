@@ -16,8 +16,8 @@ Map::Map(const std::string &str) {
 
 Map::~Map() {
 	for (int i = 0; i < entitiesCnt; ++i) {
-		if (!entities[i]->IsPlayer())
-			delete entities[i];
+		// if (!entities[i]->IsPlayer())
+		delete entities[i];
 	}
 	delete[] entities;
 
@@ -68,7 +68,7 @@ bool Map::LoadFromFile(const std::string &file) {
 	}
 
 	SML enemies;
-	enemies.ReadFile(path + ".enemies");
+	enemies.ReadFile(path + "_enemies");
 
 	enemies.ForEach([this](const std::string &key, const SML_Fragment &fragment) {
 		int posX = fragment.GetValueAsInt("posX");

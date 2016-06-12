@@ -9,23 +9,14 @@
 using namespace std;
 
 int main() {
-	Player *player = new Player("Winty");
-	Map *level = new Map("level_1");
-	bool ok = level->LoadFromFile("level_1.dat");
-	if (!ok) {
-		cout << "Error during map loading..." << endl;
-		return 1;
-	}
-	level->SpawnPlayer(player);
-
 	Engine e;
-	e.LoadLevel(level);
-	e.Start();
-
-	
-
-	delete level;
-	delete player;
+	e.Start([](map< string, string > flags, Engine &e) {
+		Player *player = new Player(flags["playerName"]);
+		Map *level = new Map(flags["levelName"]);
+		level->LoadFromFile(flags["levelName"]);
+		level->SpawnPlayer(player);
+		e.LoadLevel(level);
+	});
 
 	return 0;
 }

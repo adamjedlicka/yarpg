@@ -18,6 +18,8 @@ Engine::Engine() {
 		init_pair(1, COLOR_WHITE, COLOR_BLACK); // fixes a bug with blinking text
 	}
 
+	splash = new Splash();
+
 	maxHeight = getmaxy(window);
 	maxWidth = getmaxx(window);
 	for (int i = 0; i < MAX_BUFFERS; ++i)
@@ -32,15 +34,22 @@ Engine::~Engine() {
 	active = false;
 	for (int i = 0; i < MAX_BUFFERS; ++i)
 		delete buffers[i];
+	delete splash;
 	endwin();
 }
 
-void Engine::Start() {
+void Engine::Start(std::function< void(std::map< std::string, std::string >, Engine &) > fn) {
+	loader = fn;
 	active = true;
 	loop();
 }
 
-void Engine::Stop() { active = false; }
+void Engine::LoadContent(std::map< std::string, std::string >flags) { loader(flags, *this); }
+
+void Engine::Stop() {
+	delete level;
+	active = false;
+}
 
 bool Engine::LoadLevel(Level *lvl) {
 	level = lvl;
@@ -138,10 +147,17 @@ void Engine::loop() {
 			return;
 		}
 
-		// Game logic and rendering
-		tick();
-		tickCount++;
-		render();
+		GetCurBuffer()->ClearCanvas();
+		if (splash->Active()) {
+			splash->Tick(this);
+			splash->Render(GetCurBuffer());
+		} else {
+			// Game logic and rendering
+			tick();
+			tickCount++;
+			render();
+		}
+		drawBuffer();
 
 		// Calculate sleep time for the rest of the frame, to save CPU load
 		clock_t now = clock();
@@ -165,9 +181,6 @@ void Engine::tick() {
 
 void Engine::render() {
 	Buffer *buf = GetCurBuffer();
-	buf->ClearCanvas();
-
-	attron(COLOR_PAIR(1));
 
 	if (level)
 		level->Render(buf);
@@ -175,8 +188,16 @@ void Engine::render() {
 	if (debug)
 		buf->DrawString(0, 0, log.str());
 	log.str("");
+}
 
+void Engine::drawBuffer() {
+	clear();
+	erase();
+
+	Buffer *buf = GetCurBuffer();
+	attron(COLOR_PAIR(1));
 	int usedColorPairs = 1; // 1 because we already initialized
+
 	for (int i = 0; i < buf->GetHeight(); ++i) {
 		const Cell *line = buf->GetLine(i);
 		for (int j = 0; j < buf->GetWidth(); ++j) {
@@ -300,6 +321,69 @@ short SML_Fragment::GetColor(const std::string &key) const {
 		return COLOR_RED;
 	else
 		return COLOR_BLACK;
+}
+
+Splash::Splash() {
+	logo = "                                                               \n"
+		   "                                       ,-.----.                \n"
+		   "                ,---,       ,-.----.   \\    /  \\    ,----..    \n"
+		   "        ,---,  '  .' \\      \\    /  \\  |   :    \\  /   /   \\   \n"
+		   "       /_ ./| /  ;    '.    ;   :    \\ |   |  .\\ :|   :     :  \n"
+		   " ,---, |  ' ::  :       \\   |   | .\\ : .   :  |: |.   |  ;. /  \n"
+		   "/___/ \\.  : |:  |   /\\   \\  .   : |: | |   |   \\ :.   ; /--`   \n"
+		   " .  \\  \\ ,' '|  :  ' ;.   : |   |  \\ : |   : .   /;   | ;  __  \n"
+		   "  \\  ;  `  ,'|  |  ;/  \\   \\|   : .  / ;   | |`-' |   : |.' .' \n"
+		   "   \\  \\    ' '  :  | \\  \\ ,';   | |  \\ |   | ;    .   | '_.' : \n"
+		   "    '  \\   | |  |  '  '--'  |   | ;\\  \\:   ' |    '   ; : \\  | \n"
+		   "     \\  ;  ; |  :  :        :   ' | \\.':   : :    '   | '/  .' \n"
+		   "      :  \\  \\|  | ,'        :   : :-'  |   | :    |   :    /   \n"
+		   "       \\  ' ;`--''          |   |.'    `---'.|     \\   \\ .'    \n"
+		   "        `--`                `---'        `---`      `---`      \n"
+		   "                                                               ";
+
+	menu.push_back("New game");
+	menu.push_back("Quit");
+	menuSelection = 0;
+	active = true;
+}
+
+Splash::~Splash() {}
+
+void Splash::Tick(Engine *engine) {
+	if (engine->GetKey(KEY_DOWN))
+		menuSelection++;
+	if (engine->GetKey(KEY_UP))
+		menuSelection--;
+	menuSelection = MIN(menuSelection, menu.size() - 1);
+
+	if (engine->GetKey('\n')) {
+		if (menuSelection == 0) {
+			active = false;
+			std::map< std::string, std::string > flags;
+			flags["playerName"] = "Winty";
+			flags["levelName"] = "level_1";
+			engine->LoadContent(flags);
+		} else if (menuSelection == 1) {
+			engine->Stop();
+		}
+	}
+}
+
+void Splash::Render(Buffer *buffer) const {
+	int logoWidth = 64;
+	int logoHeight = 16;
+	int startX = buffer->GetWidth() / 2 - logoWidth / 2;
+	int startY = 5;
+
+	buffer->DrawString(startX, startY, logo);
+
+	for (unsigned int i = 0; i < menu.size(); ++i) {
+		int len = menu[i].size();
+		if (menuSelection == i)
+			buffer->DrawString(buffer->GetWidth() / 2 - len / 2 - 2, startY + logoHeight + 10 + i, "> " + menu[i]);
+		else
+			buffer->DrawString(buffer->GetWidth() / 2 - len / 2, startY + logoHeight + 10 + i, menu[i]);
+	}
 }
 
 std::string GetPath() {

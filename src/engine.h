@@ -26,15 +26,19 @@ class Level;
 class Entity;
 class Structure;
 class Buffer;
+class Splash;
 
 class Engine {
   private:
 	WINDOW *window;
+	std::function< void(std::map< std::string, std::string > , Engine &) > loader;
 	bool keys[MAX_KEYS];
 
 	int maxWidth, maxHeight;
 	bool active, debug;
 	int tickCount;
+
+	Splash *splash;
 
 	Buffer *buffers[MAX_BUFFERS];
 	Level *level;
@@ -47,7 +51,8 @@ class Engine {
 	Engine();
 	~Engine();
 
-	void Start();
+	void Start(std::function< void(std::map< std::string, std::string > , Engine &) >);
+	void LoadContent(std::map< std::string, std::string > );
 	void Stop();
 
 	bool LoadLevel(Level *);
@@ -62,6 +67,10 @@ class Engine {
 	void loop();
 	void tick();
 	void render();
+	void drawBuffer();
+
+	void renderSplash();
+	void updateSplash();
 };
 
 struct Cell {
@@ -192,6 +201,23 @@ class Structure : public Drawable {
 	void SetLevel(Level *lvl) { level = lvl; };
 	bool Destroyed() { return destroyed; }
 	void Destroy() { destroyed = true; };
+};
+
+class Splash : public Drawable {
+  private:
+	std::string logo;
+
+	bool active;
+	std::vector< std::string > menu;
+	unsigned int menuSelection;
+
+  public:
+	Splash();
+	~Splash();
+
+	bool Active() const { return active; };
+	void Tick(Engine *);
+	void Render(Buffer *) const;
 };
 
 // helper functions
