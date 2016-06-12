@@ -240,13 +240,23 @@ void SML::ReadFile(const std::string &file) {
 		}
 		ss << tmp;
 
+		std::string line = ss.str();
+		if (line[0] == '[' && line[line.size() - 1] == ']')
+			key = line.substr(1, line.size() - 2);
+
 		if (data.find(key) == data.end())
 			data[key] = SML_Fragment();
 
-		data[key].AddValue(ss.str());
+		data[key].AddValue(line);
 	}
 
 	ifs.close();
+}
+
+void SML::ForEach(std::function< void(const std::string &, const SML_Fragment &) > f) const {
+	for (const auto &v : data)
+		if (v.first != "global")
+			f(v.first, v.second);
 }
 
 const SML_Fragment &SML::GetFragment(const std::string &key) const { return data.find(key)->second; }
@@ -261,6 +271,28 @@ void SML_Fragment::AddValue(const std::string &raw) {
 
 std::string SML_Fragment::GetValue(const std::string &key) const { return data.find(key)->second; }
 int SML_Fragment::GetValueAsInt(const std::string &key) const { return std::stoi(data.find(key)->second); }
+char SML_Fragment::GetValueAsChar(const std::string &key) const { return data.find(key)->second[0]; }
+short SML_Fragment::GetColor(const std::string &key) const {
+	std::string val = data.find(key)->second;
+	if (val == "WHITE")
+		return COLOR_WHITE;
+	else if (val == "GREEN")
+		return COLOR_GREEN;
+	else if (val == "MAGENTA")
+		return COLOR_MAGENTA;
+	else if (val == "BLUE")
+		return COLOR_BLUE;
+	else if (val == "BLACK")
+		return COLOR_BLACK;
+	else if (val == "YELLOW")
+		return COLOR_YELLOW;
+	else if (val == "CYAN")
+		return COLOR_CYAN;
+	else if (val == "RED")
+		return COLOR_RED;
+	else
+		return COLOR_BLACK;
+}
 
 std::string GetPath() {
 	char pBuf[255];

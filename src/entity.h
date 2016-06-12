@@ -32,13 +32,15 @@ class FireballBlast : public Entity {
 	virtual void Colide(Entity *);
 };
 
-class Skeleton : public Entity {
+class Enemy : public Entity {
   protected:
 	int damage;
+	char ch;
+	short color;
 
   public:
-	Skeleton(int, int);
-	virtual ~Skeleton();
+	Enemy(int, int, int, int, char, short);
+	virtual ~Enemy();
 
 	virtual void Tick(Engine *);
 	virtual void Render(Buffer *) const;

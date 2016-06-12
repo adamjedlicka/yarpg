@@ -11,8 +11,8 @@ void Fireball::Tick(Engine *engine) {
 	posY += dirY;
 }
 void Fireball::Render(Buffer *buffer) const {
-	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, '@', COLOR_RED);
-	buffer->DrawChar(posX + level->GetOff().first - dirX, posY + level->GetOff().second - dirY, '.', COLOR_RED);
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, '@', COLOR_RED, COLOR_YELLOW);
+	buffer->DrawChar(posX + level->GetOff().first - dirX, posY + level->GetOff().second - dirY, '+', COLOR_RED);
 }
 void Fireball::Colide(Entity *e) {
 	e->Attack(damage);
@@ -41,16 +41,19 @@ void FireballBlast::Tick(Engine *engine) {
 		Destroy();
 }
 void FireballBlast::Render(Buffer *buffer) const {
-	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, '$', COLOR_YELLOW);
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, '@', COLOR_YELLOW, COLOR_RED);
 }
 void FireballBlast::Colide(Entity *e) { e->Attack(damage); }
 
-// ---------------------- SKELETON ----------------------
-Skeleton::Skeleton(int x, int y) : Entity(x, y) { hp = 20, damage = 5; }
-Skeleton::~Skeleton() {}
-void Skeleton::Tick(Engine *engine) {}
-void Skeleton::Render(Buffer *buffer) const {
-	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, 'M', COLOR_WHITE);
+// ---------------------- ENEMY ----------------------
+Enemy::Enemy(int x, int y, int health, int dmg, char c, short col) : Entity(x, y) {
+	hp = health, damage = dmg;
+	ch = c, color = col;
 }
-void Skeleton::Colide(Entity *e) {}
-bool Skeleton::Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; }
+Enemy::~Enemy() {}
+void Enemy::Tick(Engine *engine) {}
+void Enemy::Render(Buffer *buffer) const {
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, ch, color);
+}
+void Enemy::Colide(Entity *e) {}
+bool Enemy::Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; }

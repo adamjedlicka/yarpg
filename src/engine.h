@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstring>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -101,6 +102,8 @@ class SML_Fragment {
 	void AddValue(const std::string &);
 	std::string GetValue(const std::string &) const;
 	int GetValueAsInt(const std::string &) const;
+	char GetValueAsChar(const std::string &) const;
+	short GetColor(const std::string &) const;
 };
 
 class SML {
@@ -113,6 +116,7 @@ class SML {
 
 	void ReadFile(const std::string &);
 	const SML_Fragment &GetFragment(const std::string &) const;
+	void ForEach(std::function< void(const std::string &, const SML_Fragment &) >) const;
 };
 
 class Drawable {

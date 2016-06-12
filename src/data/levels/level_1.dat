@@ -1,14 +1,54 @@
-height = 10
-width = 10
-spawnX = 1
-spawnY = 8
-map = XXXXXXXXXX\
-X________X\
-XXXX_XX__X\
-X_____X__X\
-X_____XXXX\
-X________X\
-X________X\
-XXX_XXXXXX\
-X________X\
-XXXXXXXXXX
+height = 50
+width = 100
+spawnX = 5
+spawnY = 5
+map = \
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X     X                                                                                            X\
+X    XX                                                                                            X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X          XXXXX                                                                                   X\
+X              X   XXXXXXXXX                                                                       X\
+X              X   X                                                                               X\
+X              X   X                                                                               X\
+X              X   X                                                                               X\
+X   XXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXXX                                                             X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+X                                                                                                  X\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

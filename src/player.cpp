@@ -26,7 +26,7 @@ void Player::Tick(Engine *engine) {
 
 	dir = engine->Direction(KEY_UP, KEY_LEFT, KEY_DOWN, KEY_RIGHT);
 	if (dir.first != 0 || dir.second != 0)
-		engine->GetCurLevel()->SpawnEntity(new Fireball(posX + dir.first, posY + dir.second, dir.first, dir.second));
+		engine->GetCurLevel()->SpawnEntity(new Fireball(posX, posY, dir.first, dir.second));
 
 	ticksSinceLastStep++;
 

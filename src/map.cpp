@@ -19,13 +19,13 @@ Map::~Map() {}
 bool Map::LoadFromFile(const std::string &file) {
 	std::string path = GetPath() + "data/levels/" + file;
 
-	SML sml;
-	sml.ReadFile(path);
+	SML global;
+	global.ReadFile(path);
 
-	height = sml.GetFragment("global").GetValueAsInt("height");
-	width = sml.GetFragment("global").GetValueAsInt("width");
-	spawnX = sml.GetFragment("global").GetValueAsInt("spawnX");
-	spawnY = sml.GetFragment("global").GetValueAsInt("spawnY");
+	height = global.GetFragment("global").GetValueAsInt("height");
+	width = global.GetFragment("global").GetValueAsInt("width");
+	spawnX = global.GetFragment("global").GetValueAsInt("spawnX");
+	spawnY = global.GetFragment("global").GetValueAsInt("spawnY");
 
 	structures = new Structure **[height];
 	for (int i = 0; i < height; ++i) {
@@ -34,7 +34,7 @@ bool Map::LoadFromFile(const std::string &file) {
 			structures[i][j] = NULL;
 	}
 
-	std::string map = sml.GetFragment("global").GetValue("map");
+	std::string map = global.GetFragment("global").GetValue("map");
 
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; j++) {
@@ -46,6 +46,20 @@ bool Map::LoadFromFile(const std::string &file) {
 			}
 		}
 	}
+
+	SML enemies;
+	enemies.ReadFile(path + ".enemies");
+
+	enemies.ForEach([this](const std::string &key, const SML_Fragment &fragment) {
+		int posX = fragment.GetValueAsInt("posX");
+		int posY = fragment.GetValueAsInt("posY");
+		int hp = fragment.GetValueAsInt("hp");
+		int dmg = fragment.GetValueAsInt("damage");
+		int ch = fragment.GetValueAsChar("char");
+		short color = fragment.GetColor("color");
+
+		SpawnEntity(new Enemy(posX, posY, hp, dmg, ch, color));
+	});
 
 	return true;
 }
