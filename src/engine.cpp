@@ -28,7 +28,12 @@ Engine::Engine() {
 	tickCount = 0;
 }
 
-Engine::~Engine() { endwin(); }
+Engine::~Engine() {
+	active = false;
+	for (int i = 0; i < MAX_BUFFERS; ++i)
+		delete buffers[i];
+	endwin();
+}
 
 void Engine::Start() {
 	active = true;
@@ -128,7 +133,10 @@ void Engine::loop() {
 		while (c = getch(), c != ERR)
 			keys[c] = true;
 
-		// erase();
+		if (GetKey(KEY_BACKSPACE)) { // quit the game
+			Stop();
+			return;
+		}
 
 		// Game logic and rendering
 		tick();

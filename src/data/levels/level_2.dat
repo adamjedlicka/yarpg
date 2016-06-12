@@ -1,0 +1,15 @@
+height = 10
+width = 20
+spawnX = 5
+spawnY = 5
+map = \
+XXXXXXXXXXXXXXXXXXXX\
+X                  X\
+X                  X\
+X                  X\
+X                  X\
+X                  X\
+X                  X\
+X                  X\
+X                  X\
+XXXXXXXXXXXXXXXXXXXX

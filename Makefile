@@ -2,7 +2,8 @@
 program = yarpg
 
 CC = g++
-CF = -std=c++11 -Wall -pedantic -g
+CF = -std=c++11 -Wall -pedantic
+CD = -g -fsanitize=address
 CL = -lncurses
 
 src = src/main.cpp src/engine.cpp src/map.cpp src/player.cpp src/structure.cpp src/entity.cpp
@@ -23,10 +24,10 @@ uninstall:
 ${program}: ${obj}
 	mkdir -p bin
 	cp -rf src/data bin
-	${CC} ${obj} ${CL} -o bin/${program}
+	${CC} ${obj} ${CD} ${CL} -o bin/${program}
 
 ${obj}: ${src}
 	mkdir -p build
 	cd build
-	${CC} ${CF} ${CL} -c ${src}
+	${CC} ${CF} ${CD} ${CL} -c ${src}
 	mv *.o build/

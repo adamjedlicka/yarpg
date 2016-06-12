@@ -14,7 +14,22 @@ Map::Map(const std::string &str) {
 	entitiesCnt = 0;
 }
 
-Map::~Map() {}
+Map::~Map() {
+	for (int i = 0; i < entitiesCnt; ++i) {
+		if (!entities[i]->IsPlayer())
+			delete entities[i];
+	}
+	delete[] entities;
+
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
+			if (structures[i][j] != NULL)
+				delete structures[i][j];
+		}
+		delete[] structures[i];
+	}
+	delete[] structures;
+}
 
 bool Map::LoadFromFile(const std::string &file) {
 	std::string path = GetPath() + "data/levels/" + file;
@@ -35,10 +50,15 @@ bool Map::LoadFromFile(const std::string &file) {
 	}
 
 	std::string map = global.GetFragment("global").GetValue("map");
+	int mapSize = map.size();
 
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; j++) {
-			char c = map[i * width + j];
+			if ((i * width) + j >= mapSize) {
+				std::cout << i << " * " << width << " + " << j << " - " << mapSize << std::endl;
+			}
+
+			char c = map[(i * width) + j];
 			switch (c) {
 			case 'X':
 				structures[i][j] = new Wall(this, j, i);
@@ -130,6 +150,7 @@ void Map::Tick(Engine *engine) {
 		}
 	}
 	entitiesCnt = tmp;
+	delete[] entities;
 	entities = entitiesNEW;
 
 	engine->log << "mapName: " << name << ", offsets: " << offX << ", " << offX << std::endl;
