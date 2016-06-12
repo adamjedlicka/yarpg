@@ -21,6 +21,10 @@
 #define MAX_KEYS 512  // Maximum number of keys ncurses can return
 #define MAX_BUFFERS 1 // Maximum number of screen buffers engine can handle
 
+#define OK_STATE 0
+#define LOOSE_STATE 1
+#define WIN_STATE 2
+
 class Drawable;
 class Level;
 class Entity;
@@ -31,7 +35,7 @@ class Splash;
 class Engine {
   private:
 	WINDOW *window;
-	std::function< void(std::map< std::string, std::string > , Engine &) > loader;
+	std::function< void(std::map< std::string, std::string >, Engine &) > loader;
 	bool keys[MAX_KEYS];
 
 	int maxWidth, maxHeight;
@@ -51,8 +55,8 @@ class Engine {
 	Engine();
 	~Engine();
 
-	void Start(std::function< void(std::map< std::string, std::string > , Engine &) >);
-	void LoadContent(std::map< std::string, std::string > );
+	void Start(std::function< void(std::map< std::string, std::string >, Engine &) >);
+	void LoadContent(std::map< std::string, std::string >);
 	void Stop();
 
 	bool LoadLevel(Level *);
@@ -178,6 +182,7 @@ class Level : public Drawable {
 	virtual ~Level(){};
 
 	virtual void SpawnEntity(Entity *) = 0;
+	virtual short GameState() = 0;
 
 	std::pair< int, int > GetOff() { return std::make_pair(offX, offY); };
 };
@@ -216,6 +221,7 @@ class Splash : public Drawable {
 	~Splash();
 
 	bool Active() const { return active; };
+	void Activate() { active = true; };
 	void Tick(Engine *);
 	void Render(Buffer *) const;
 };

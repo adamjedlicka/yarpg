@@ -5,6 +5,7 @@ Player::Player(const std::string &str) : Entity(0, 0) {
 
 	// set stats
 	speed = 10;
+	hp = 20;
 
 	// set state
 	ticksSinceLastStep = 0;
@@ -32,6 +33,7 @@ void Player::Tick(Engine *engine) {
 
 	engine->log << "playerPos: " << posX << ", " << posY << std::endl;
 	engine->log << "playerDir: " << dirX << ", " << dirY << std::endl;
+	engine->log << "player HP: " << hp << std::endl;
 }
 
 void Player::Render(Buffer *buffer) const {

@@ -55,5 +55,5 @@ void Enemy::Tick(Engine *engine) {}
 void Enemy::Render(Buffer *buffer) const {
 	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, ch, color);
 }
-void Enemy::Colide(Entity *e) {}
+void Enemy::Colide(Entity *e) { e->Attack(damage); }
 bool Enemy::Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; }

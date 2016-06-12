@@ -10,6 +10,8 @@ Map::Map(const std::string &str) {
 	spawnY = 0;
 	name = str;
 
+	gameState = OK_STATE;
+
 	entities = new Entity *[ENTITY_MAX];
 	entitiesCnt = 0;
 }
@@ -103,6 +105,10 @@ void Map::SpawnEntity(Entity *e) {
 }
 
 void Map::Tick(Engine *engine) {
+	if (gameState != OK_STATE) {
+		return;
+	}
+
 	for (int i = 0; i < height; ++i)
 		for (int j = 0; j < width; j++)
 			if (structures[i][j] != NULL)
@@ -138,6 +144,8 @@ void Map::Tick(Engine *engine) {
 
 	for (int i = 0; i < entitiesCnt; ++i) {
 		if (entities[i]->Destroyed()) {
+			if (entities[i]->IsPlayer())
+				gameState = LOOSE_STATE;
 			delete entities[i];
 			entities[i] = NULL;
 		}
@@ -158,7 +166,12 @@ void Map::Tick(Engine *engine) {
 }
 
 void Map::Render(Buffer *buffer) const {
-	buffer->ClearCanvas();
+	if (gameState == LOOSE_STATE) {
+		std::string text = "You loose! Press enter to continue...";
+		buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, buffer->GetHeight() / 2, text);
+
+		return;
+	}
 
 	for (int i = 0; i < height; ++i)
 		for (int j = 0; j < width; j++)

@@ -44,7 +44,7 @@ void Engine::Start(std::function< void(std::map< std::string, std::string >, Eng
 	loop();
 }
 
-void Engine::LoadContent(std::map< std::string, std::string >flags) { loader(flags, *this); }
+void Engine::LoadContent(std::map< std::string, std::string > flags) { loader(flags, *this); }
 
 void Engine::Stop() {
 	delete level;
@@ -175,8 +175,15 @@ void Engine::tick() {
 
 	log << "tickCount: " << tickCount << std::endl; // DEBUG
 
-	if (level)
+	if (level && level->GameState() == OK_STATE)
 		level->Tick(this);
+	else if (level && level->GameState() == LOOSE_STATE) {
+		if (GetKey('\n')) {
+			delete level;
+			level = NULL;
+			splash->Activate();
+		}
+	}
 }
 
 void Engine::render() {

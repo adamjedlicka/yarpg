@@ -30,3 +30,11 @@ hp = 75
 damage = 10
 posX = 3
 posY = 13
+[Zombie_2]
+type = enemy
+char = M
+color = CYAN
+hp = 75
+damage = 10
+posX = 5
+posY = 2

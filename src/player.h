@@ -25,6 +25,7 @@ class Player : public Entity {
 	virtual bool IsPlayer() { return true; };
 	virtual bool IsSolid() { return true; };
 	virtual bool Destroyed() { return false; };
+	virtual bool Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; };
 };
 
 #endif

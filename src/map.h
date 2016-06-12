@@ -20,6 +20,8 @@ class Map : public Level {
 	int entitiesCnt;
 	Structure ***structures;
 
+	short gameState;
+
   public:
 	Map(const std::string &);
 	virtual ~Map();
@@ -30,6 +32,7 @@ class Map : public Level {
 	bool LoadFromFile(const std::string &);
 	void SpawnPlayer(Entity *);
 	void SpawnEntity(Entity *);
+	short GameState() { return gameState; };
 };
 
 #endif
