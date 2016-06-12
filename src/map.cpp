@@ -1,3 +1,4 @@
+#include "entity.h"
 #include "map.h"
 
 Map::Map(const std::string &str) {
@@ -27,6 +28,8 @@ bool Map::LoadFromFile(const std::string &path) {
 				structures[i][j] = new Wall(this, j, i);
 		}
 	}
+
+	SpawnEntity(new Skeleton(5, 10));
 
 	return true;
 }
@@ -66,6 +69,19 @@ void Map::Tick(Engine *engine) {
 			entities[i]->Colide(structures[pos.second][pos.first]);
 		}
 	}
+
+	int colisions = 0;
+	for (int i = 0; i < entitiesCnt; ++i) {
+		for (int j = 0; j < entitiesCnt; ++j) {
+			if (i != j) {
+				std::pair< int, int > posA = entities[i]->GetPos();
+				std::pair< int, int > posB = entities[j]->GetPos();
+				if (posA == posB)
+					entities[i]->Colide(entities[j]), ++colisions;
+			}
+		}
+	}
+	engine->log << "colisions: " << colisions << std::endl;
 
 	offX = (engine->GetCurBuffer()->GetWidth() / 2) - player->GetPos().first;
 	offY = (engine->GetCurBuffer()->GetHeight() / 2) - player->GetPos().second;

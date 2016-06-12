@@ -102,6 +102,7 @@ class Entity : public Drawable {
 	Level *level;
 	int posX, posY, dirX, dirY;
 	bool destroyed;
+	int hp, energy;
 
   public:
 	Entity(int x, int y) { posX = x, posY = y, destroyed = false; };
@@ -112,6 +113,7 @@ class Entity : public Drawable {
 	virtual bool IsPlayer() { return false; };
 	virtual bool IsSolid() { return false; };
 	virtual void OnDestroy(){};
+	virtual bool Attack(int) { return false; };
 
 	std::pair< int, int > GetPos() { return std::make_pair(posX, posY); };
 	void SetPos(int x, int y) { posX = x, posY = y; }
