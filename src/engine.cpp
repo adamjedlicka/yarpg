@@ -400,6 +400,7 @@ void Splash::Tick(Engine *engine) {
 			menuStage++;
 		}
 	} else if (menuStage == 3) {
+		menuStage = 0;
 		active = false;
 		flags["levelName"] = "level_1";
 		engine->LoadContent(flags);
