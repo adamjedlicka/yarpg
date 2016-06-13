@@ -81,7 +81,8 @@ void Enemy::Colide(Entity *e) {
 		e->Attack(damage);
 		attTicks = 0;
 	}
-	SetPos(posX - dirX, posY - dirY);
+	if (e->IsSolid())
+		SetPos(posX - dirX, posY - dirY);
 }
 bool Enemy::Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; }
 

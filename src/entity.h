@@ -48,6 +48,7 @@ class Enemy : public Entity {
 	virtual void Render(Buffer *) const;
 	virtual void Colide(Entity *);
 	virtual bool Attack(int);
+	virtual bool IsSolid() { return true; }
 };
 
 class Portal : public Entity {

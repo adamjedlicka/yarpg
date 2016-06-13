@@ -51,3 +51,23 @@ hp = 50
 damage = 10
 movSpeed = 15
 attSpeed = 15
+[Zombie_2]
+type = enemy
+posX = 28
+posY = 13
+char = Z
+color = GREEN
+hp = 50
+damage = 10
+movSpeed = 15
+attSpeed = 15
+[Zombie_3]
+type = enemy
+posX = 28
+posY = 6
+char = Z
+color = GREEN
+hp = 50
+damage = 10
+movSpeed = 15
+attSpeed = 15
