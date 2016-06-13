@@ -1,3 +1,12 @@
+/** 
+ * @mainpage
+ * @section Description
+ * 
+ * Simple RPG, top-down & realtime engine, which can be used with custom made maps, items, enemies and quests
+ * 
+ * Created by Adam Jedlicka, 2016
+ */
+
 #include <fstream>
 #include <iostream>
 #include <sstream>

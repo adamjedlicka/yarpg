@@ -5,7 +5,7 @@ CF = -std=c++11 -Wall -pedantic -Wno-long-long -O0 -ggdb
 CL = -lncurses
 CD = #-g -fsanitize=address
 
-all: ${program}
+all: ${program} doc
 
 compile: ${program}
 
@@ -13,9 +13,11 @@ run: compile
 	./${program}
 
 doc:
+	doxygen Doxyfile
 	
 clean:
-	rm -rf build
+	rm -rf build/
+	rm -rf doc/
 	rm -rf ${program}
 
 ${program}:

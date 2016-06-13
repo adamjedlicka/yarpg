@@ -30,6 +30,7 @@
 bin/
 build/
 srcTMP/
+doc/
 
 log.txt
 log
