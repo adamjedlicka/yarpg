@@ -185,6 +185,7 @@ class Level : public Drawable {
 	virtual void LoadLevel(const std::string &) = 0;
 	virtual void SpawnEntity(Entity *) = 0;
 	virtual short GameState() = 0;
+	virtual void SetStructure(int, int, Structure *){};
 
 	std::pair< int, int > GetOff() { return std::make_pair(offX, offY); };
 };

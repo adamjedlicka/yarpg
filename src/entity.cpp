@@ -15,6 +15,7 @@ void Fireball::Render(Buffer *buffer) const {
 	buffer->DrawChar(posX + level->GetOff().first - dirX, posY + level->GetOff().second - dirY, '+', COLOR_RED);
 }
 void Fireball::Colide(Entity *e) {
+	SetDir(0, 0);
 	e->Attack(damage);
 	Destroy();
 }
@@ -32,7 +33,7 @@ void Fireball::OnDestroy() {
 
 // ---------------------- FIREBALL BLAST ----------------------
 FireballBlast::FireballBlast(int x, int y) : Entity(x, y) {
-	ticks = 1;
+	ticks = 10;
 	damage = 5;
 }
 FireballBlast::~FireballBlast() {}
@@ -67,4 +68,27 @@ void Portal::Render(Buffer *buffer) const {
 void Portal::Colide(Entity *e) {
 	if (e->IsPlayer())
 		level->LoadLevel(nextLevel);
+}
+
+// ---------------------- DOOR SWITCH ----------------------
+DoorSwitch::DoorSwitch(int x, int y, int xFrom, int xTo, int yFrom, int yTo) : Entity(x, y) {
+	this->xFrom = xFrom, this->xTo = xTo;
+	this->yFrom = yFrom, this->yTo = yTo;
+	switched = false;
+	ch = '/';
+}
+DoorSwitch::~DoorSwitch() {}
+void DoorSwitch::Render(Buffer *buffer) const {
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, ch, COLOR_WHITE);
+}
+void DoorSwitch::Colide(Entity *e) {
+	if (e->IsPlayer() && !switched) {
+		switched = true;
+		ch = '\\';
+		for (int i = yFrom; i <= yTo; ++i) {
+			for (int j = xFrom; j <= xTo; ++j) {
+				level->SetStructure(j, i, NULL);
+			}
+		}
+	}
 }

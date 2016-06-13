@@ -72,6 +72,9 @@ bool Map::LoadFromFile(const std::string &file) {
 			case 'X':
 				structures[i][j] = new Wall(this, j, i);
 				break;
+			case '-':
+				structures[i][j] = new Door(this, j, i);
+				break;
 			}
 		}
 	}
@@ -83,6 +86,15 @@ bool Map::LoadFromFile(const std::string &file) {
 			std::string lvl = fragment.GetValue("level");
 
 			SpawnEntity(new Portal(posX, posY, lvl));
+		} else if (fragment.GetValue("type") == "doorSwitch") {
+			int posX = fragment.GetValueAsInt("posX");
+			int posY = fragment.GetValueAsInt("posY");
+			int xFrom = fragment.GetValueAsInt("xFrom");
+			int xTo = fragment.GetValueAsInt("xTo");
+			int yFrom = fragment.GetValueAsInt("yFrom");
+			int yTo = fragment.GetValueAsInt("yTo");
+
+			SpawnEntity(new DoorSwitch(posX, posY, xFrom, xTo, yFrom, yTo));
 		}
 	});
 
@@ -232,4 +244,12 @@ void Map::Render(Buffer *buffer) const {
 
 	if (entities[0])
 		entities[0]->Render(buffer);
+}
+
+void Map::SetStructure(int x, int y, Structure *s) {
+	if (structures[y][x] == NULL)
+		return;
+
+	delete structures[y][x];
+	structures[y][x] = s;
 }

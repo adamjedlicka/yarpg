@@ -30,6 +30,7 @@ class Map : public Level {
 	virtual void LoadLevel(const std::string &);
 	virtual void Tick(Engine *);
 	virtual void Render(Buffer *) const;
+	virtual void SetStructure(int, int, Structure *);
 
 	bool LoadFromFile(const std::string &);
 	void SpawnPlayer(Entity *);

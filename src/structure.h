@@ -12,4 +12,13 @@ class Wall : public Structure {
 	virtual void Colide(Entity *);
 };
 
+class Door : public Structure {
+  public:
+	Door(Level *, int, int);
+	virtual ~Door();
+
+	virtual void Render(Buffer *) const;
+	virtual void Colide(Entity *);
+};
+
 #endif

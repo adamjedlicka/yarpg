@@ -1,25 +1,43 @@
-height = 15
-width = 25
+height = 25
+width = 50
 spawnX = 5
 spawnY = 5
 map = \
-XXXXXXXXXXXXXXXXXXXXXXXXX\
-X                       X\
-X                       X\
-X                       X\
-X                       X\
-X                       X\
-X                       X\
-X                       X\
-X                       X\
-X                       X\
-X                       X\
-X                 X     X\
-X                 X XXXXX\
-X                 X     X\
-XXXXXXXXXXXXXXXXXXXXXXXXX
-[NextLevel]
+XXXXXXXXXX                                        \
+X        X                        XXXXXX          \
+X        X                        X    X          \
+X        XXXXXXXXXX               X    X          \
+X                 X    XXXXXXXXXXXX    X     XXX  \
+XXXX              X  XXX XX            X    X   X \
+   X              XXXX   XX            XXXXX     X\
+   X                     XX                      X\
+   X                     XX   XXXXX             X \
+XXXX  X  XXXXX           XX   X   X      XXXXXXX  \
+X        X   X                X   X      X        \
+X        X   X                XXXXX      XXXXXXXXX\
+X        X   X                                   X\
+XXXXXXXXXX   X                                   X\
+             X       XXXXXXXXXXXXXX              X\
+             X       X            X              X\
+           XXX-------XXX          X              X\
+          X             X         XXXXXX         X\
+         X               X             X         X\
+        X                 X            X         X\
+        X                 X      XXXXXXX         X\
+        X                 X      X               X\
+         X               X       X               X\
+          XX           XX        X               X\
+            XXXXXXXXXXX          XXXXXXXXXXXXXXXXX
+[Portal_1]
 type = portal
 level = level_2
-posX = 10
+posX = 17
+posY = 20
+[DoorSwitch_1]
+type = doorSwitch
+posX = 46
 posY = 5
+xFrom = 14
+xTo = 20
+yFrom = 16
+yTo = 16

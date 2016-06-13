@@ -60,4 +60,18 @@ class Portal : public Entity {
 	virtual void Colide(Entity *);
 };
 
+class DoorSwitch : public Entity {
+  protected:
+	int xFrom, xTo, yFrom, yTo;
+	bool switched;
+	char ch;
+
+  public:
+	DoorSwitch(int, int, int, int, int, int);
+	virtual ~DoorSwitch();
+
+	virtual void Render(Buffer *) const;
+	virtual void Colide(Entity *);
+};
+
 #endif
