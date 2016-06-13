@@ -90,6 +90,7 @@ class Buffer {
   private:
 	Cell **canvas;
 	int width, height;
+	int frameCount;
 
   public:
 	Buffer();
@@ -104,6 +105,7 @@ class Buffer {
 
 	int GetWidth() const { return width; };
 	int GetHeight() const { return height; };
+	int GetFrameCnt() const { return frameCount; };
 	char GetChar(int h, int w) const { return canvas[h][w].ch; };
 	const Cell *GetLine(int h) const { return canvas[h]; };
 };

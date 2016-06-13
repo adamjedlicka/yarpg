@@ -77,6 +77,7 @@ Buffer::Buffer() {}
 Buffer::Buffer(int w, int h) {
 	width = w;
 	height = h;
+	frameCount = 0;
 	canvas = new Cell *[height];
 	for (int i = 0; i < height; ++i)
 		canvas[i] = new Cell[width];
@@ -122,6 +123,7 @@ void Buffer::DrawString(int width, int height, const std::string &str) {
 }
 
 void Buffer::ClearCanvas() {
+	frameCount++;
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; j++) {
 			canvas[i][j].ch = ' ';
@@ -346,7 +348,7 @@ Splash::Splash() {
 		   "      :  \\  \\|  | ,'        :   : :-'  |   | :    |   :    /   \n"
 		   "       \\  ' ;`--''          |   |.'    `---'.|     \\   \\ .'    \n"
 		   "        `--`                `---'        `---`      `---`      \n"
-		   "                                                               ";
+		   "                                       by Adam Jedlicka         ";
 
 	menu.push_back("New game");
 	menu.push_back("Quit");
@@ -408,7 +410,7 @@ void Splash::Render(Buffer *buffer) const {
 	int logoWidth = 64;
 	int logoHeight = 16;
 	int startX = buffer->GetWidth() / 2 - logoWidth / 2;
-	int startY = 5;
+	int startY = MAX(buffer->GetHeight() / 2 - (logoHeight / 2 + 5), 0);
 
 	buffer->DrawString(startX, startY, logo);
 
@@ -416,16 +418,23 @@ void Splash::Render(Buffer *buffer) const {
 		for (unsigned int i = 0; i < menu.size(); ++i) {
 			int len = menu[i].size();
 			if (menuSelection == i)
-				buffer->DrawString(buffer->GetWidth() / 2 - len / 2 - 2, startY + logoHeight + 10 + i, "> " + menu[i]);
+				buffer->DrawString(buffer->GetWidth() / 2 - len / 2 - 2, startY + logoHeight + i + 2, "> " + menu[i]);
 			else
-				buffer->DrawString(buffer->GetWidth() / 2 - len / 2, startY + logoHeight + 10 + i, menu[i]);
+				buffer->DrawString(buffer->GetWidth() / 2 - len / 2, startY + logoHeight + i + 2, menu[i]);
 		}
 	} else if (menuStage == 1) {
+		int frameCnt = buffer->GetFrameCnt();
+		frameCnt = frameCnt % 60;
 		std::string text = "Choose your name: " + flags.find("playerName")->second;
-		buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, startY + logoHeight + 10, text);
+		std::string text2 = "(confirm with [ENTER])";
+		if (frameCnt > 30)
+			buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, startY + logoHeight + 2, text + '_');
+		else
+			buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, startY + logoHeight + 2, text);
+		buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, startY + logoHeight + 2 + 2, text2);
 	} else if (menuStage == 2) {
 		std::string text = "Press [m] key for melee hero, or [r] key for ranged hero.";
-		buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, startY + logoHeight + 10, text);
+		buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, startY + logoHeight + 2, text);
 	}
 }
 
