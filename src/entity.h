@@ -48,4 +48,16 @@ class Enemy : public Entity {
 	virtual bool Attack(int);
 };
 
+class Portal : public Entity {
+  protected:
+	std::string nextLevel;
+
+  public:
+	Portal(int, int, const std::string &);
+	virtual ~Portal();
+
+	virtual void Render(Buffer *) const;
+	virtual void Colide(Entity *);
+};
+
 #endif

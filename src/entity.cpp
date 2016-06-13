@@ -57,3 +57,14 @@ void Enemy::Render(Buffer *buffer) const {
 }
 void Enemy::Colide(Entity *e) { e->Attack(damage); }
 bool Enemy::Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; }
+
+// ---------------------- PORTAL ----------------------
+Portal::Portal(int x, int y, const std::string &lvl) : Entity(x, y) { nextLevel = lvl; }
+Portal::~Portal() {}
+void Portal::Render(Buffer *buffer) const {
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, 'O', COLOR_BLUE);
+}
+void Portal::Colide(Entity *e) {
+	if (e->IsPlayer())
+		level->LoadLevel(nextLevel);
+}

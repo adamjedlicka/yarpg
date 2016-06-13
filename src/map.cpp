@@ -1,16 +1,17 @@
 #include "entity.h"
 #include "map.h"
 
-Map::Map(const std::string &str) {
+Map::Map() {
 	height = 0;
 	width = 0;
 	offX = 0;
 	offY = 0;
 	spawnX = 0;
 	spawnY = 0;
-	name = str;
+	name = "level name";
 
-	gameState = OK_STATE;
+	gameState = UNLOAD_STATE;
+	levelLoaded = false;
 
 	entities = new Entity *[ENTITY_MAX];
 	entitiesCnt = 0;
@@ -18,7 +19,6 @@ Map::Map(const std::string &str) {
 
 Map::~Map() {
 	for (int i = 0; i < entitiesCnt; ++i) {
-		// if (!entities[i]->IsPlayer())
 		delete entities[i];
 	}
 	delete[] entities;
@@ -31,6 +31,11 @@ Map::~Map() {
 		delete[] structures[i];
 	}
 	delete[] structures;
+}
+
+void Map::LoadLevel(const std::string &str) {
+	name = str;
+	gameState = UNLOAD_STATE;
 }
 
 bool Map::LoadFromFile(const std::string &file) {
@@ -69,6 +74,16 @@ bool Map::LoadFromFile(const std::string &file) {
 		}
 	}
 
+	global.ForEach([this](const std::string &key, const SML_Fragment &fragment) {
+		if (fragment.GetValue("type") == "portal") {
+			int posX = fragment.GetValueAsInt("posX");
+			int posY = fragment.GetValueAsInt("posY");
+			std::string lvl = fragment.GetValue("level");
+
+			SpawnEntity(new Portal(posX, posY, lvl));
+		}
+	});
+
 	SML enemies;
 	enemies.ReadFile(path + "_enemies");
 
@@ -105,6 +120,35 @@ void Map::SpawnEntity(Entity *e) {
 }
 
 void Map::Tick(Engine *engine) {
+	engine->log << "levelName: " << name << ", gameState: " << gameState << std::endl;
+
+	if (levelLoaded == false && gameState == UNLOAD_STATE) {
+		LoadFromFile(name);
+		levelLoaded = true;
+		gameState = OK_STATE;
+	} else if (levelLoaded == true && gameState == UNLOAD_STATE) {
+		for (int i = 0; i < entitiesCnt; ++i) {
+			if (!entities[i]->IsPlayer())
+				delete entities[i];
+			entities[i] = NULL;
+		}
+		entitiesCnt = 0;
+
+		for (int i = 0; i < height; ++i) {
+			for (int j = 0; j < width; ++j) {
+				if (structures[i][j] != NULL)
+					delete structures[i][j];
+			}
+			delete[] structures[i];
+		}
+		delete[] structures;
+
+		LoadFromFile(name);
+		SpawnPlayer(player);
+
+		gameState = OK_STATE;
+	}
+
 	if (gameState != OK_STATE) {
 		return;
 	}

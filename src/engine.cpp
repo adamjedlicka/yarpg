@@ -175,7 +175,7 @@ void Engine::tick() {
 
 	log << "tickCount: " << tickCount << std::endl; // DEBUG
 
-	if (level && level->GameState() == OK_STATE)
+	if (level && (level->GameState() == OK_STATE || level->GameState() == UNLOAD_STATE))
 		level->Tick(this);
 	else if (level && level->GameState() == LOOSE_STATE) {
 		if (GetKey('\n')) {

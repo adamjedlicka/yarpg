@@ -1,55 +1,25 @@
-height = 50
-width = 100
+height = 15
+width = 25
 spawnX = 5
 spawnY = 5
 map = \
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X     X                                                                                            X\
-X    XX                                                                                            X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X          XXXXX                                                                                   X\
-X              X   XXXXXXXXX                                                                       X\
-X              X   X                                                                               X\
-X              X   X                                                                               X\
-X              X   X                                                                               X\
-X   XXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXXX                                                             X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-X                                                                                                  X\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXX\
+X                       X\
+X                       X\
+X                       X\
+X                       X\
+X                       X\
+X                       X\
+X                       X\
+X                       X\
+X                       X\
+X                       X\
+X                 X     X\
+X                 X XXXXX\
+X                 X     X\
+XXXXXXXXXXXXXXXXXXXXXXXXX
+[NextLevel]
+type = portal
+level = level_2
+posX = 10
+posY = 5

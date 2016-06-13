@@ -4,15 +4,15 @@ char = S
 color = YELLOW
 hp = 50
 damage = 5
-posX = 24
-posY = 6
+posX = 10
+posY = 12
 [Skeleton_2]
 type = enemy
 char = S
 color = YELLOW
 hp = 50
 damage = 5
-posX = 28
+posX = 20
 posY = 4
 [Skeleton_3]
 type = enemy
@@ -20,21 +20,5 @@ char = S
 color = YELLOW
 hp = 50
 damage = 5
-posX = 16
+posX = 8
 posY = 10
-[Zombie_1]
-type = enemy
-char = M
-color = CYAN
-hp = 75
-damage = 10
-posX = 3
-posY = 13
-[Zombie_2]
-type = enemy
-char = M
-color = CYAN
-hp = 75
-damage = 10
-posX = 5
-posY = 2

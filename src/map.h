@@ -21,11 +21,13 @@ class Map : public Level {
 	Structure ***structures;
 
 	short gameState;
+	bool levelLoaded;
 
   public:
-	Map(const std::string &);
+	Map();
 	virtual ~Map();
 
+	virtual void LoadLevel(const std::string &);
 	virtual void Tick(Engine *);
 	virtual void Render(Buffer *) const;
 

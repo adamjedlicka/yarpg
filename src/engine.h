@@ -24,6 +24,7 @@
 #define OK_STATE 0
 #define LOOSE_STATE 1
 #define WIN_STATE 2
+#define UNLOAD_STATE 4
 
 class Drawable;
 class Level;
@@ -181,6 +182,7 @@ class Level : public Drawable {
 	Level(){};
 	virtual ~Level(){};
 
+	virtual void LoadLevel(const std::string &) = 0;
 	virtual void SpawnEntity(Entity *) = 0;
 	virtual short GameState() = 0;
 
