@@ -104,6 +104,30 @@ void Enemy::Colide(Entity *e) {
 }
 bool Enemy::Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; }
 
+// ---------------------- NPC ----------------------
+NPC::NPC(int x, int y, char ch, short color, const std::string &text, const std::string &questID) : Entity(x, y) {
+	this->ch = ch, this->color = color;
+	this->text = text, this->questID = questID;
+	showText = false;
+	showTextTicks = 0;
+}
+NPC::~NPC() {}
+void NPC::Tick(Engine *engine) {
+	if (showText == true && showTextTicks-- == 0)
+		showText = false;
+}
+void NPC::Render(Buffer *buffer) const {
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, ch, color);
+	if (showText)
+		buffer->DrawString(posX - text.size() / 2 + level->GetOff().first, posY - 1 + level->GetOff().second, text);
+}
+void NPC::Colide(Entity *e) {
+	if (e->IsPlayer()) {
+		showText = true;
+		showTextTicks = 1;
+	}
+}
+
 // ---------------------- PORTAL ----------------------
 Portal::Portal(int x, int y, const std::string &lvl) : Entity(x, y) { nextLevel = lvl; }
 Portal::~Portal() {}

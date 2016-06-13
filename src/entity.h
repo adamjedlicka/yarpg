@@ -36,7 +36,8 @@ class Melee : public Entity {
   protected:
 	int damage;
 	int ticks;
-	public:
+
+  public:
 	Melee(int, int);
 	virtual ~Melee();
 
@@ -62,6 +63,25 @@ class Enemy : public Entity {
 	virtual void Colide(Entity *);
 	virtual bool Attack(int);
 	virtual bool IsSolid() { return true; }
+};
+
+class NPC : public Entity {
+  protected:
+	char ch;
+	short color;
+	std::string text;
+	std::string questID;
+	bool showText;
+	int showTextTicks;
+
+  public:
+	NPC(int, int, char, short, const std::string &, const std::string &);
+	~NPC();
+
+	virtual void Tick(Engine *);
+	virtual void Render(Buffer *) const;
+	virtual void Colide(Entity *);
+	virtual bool IsSolid() { return true; };
 };
 
 class Portal : public Entity {

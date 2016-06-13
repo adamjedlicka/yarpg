@@ -106,6 +106,15 @@ bool Map::LoadFromFile(const std::string &file) {
 			int attSpeed = fragment.GetValueAsInt("attSpeed");
 
 			SpawnEntity(new Enemy(posX, posY, hp, dmg, ch, color, movSpeed, attSpeed));
+		} else if (fragment.GetValue("type") == "NPC") {
+			int posX = fragment.GetValueAsInt("posX");
+			int posY = fragment.GetValueAsInt("posY");
+			std::string text = fragment.GetValue("text");
+			std::string questID = fragment.GetValue("questID");
+			int ch = fragment.GetValueAsChar("char");
+			short color = fragment.GetColor("color");
+
+			SpawnEntity(new NPC(posX, posY, ch, color, text, questID));
 		}
 	});
 

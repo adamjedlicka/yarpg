@@ -81,3 +81,11 @@ hp = 200
 damage = 50
 movSpeed = 15
 attSpeed = 10
+[QuestGiver_1]
+type = NPC
+posX = 1
+posY = 10
+char = !
+color = YELLOW
+text = You need to find Excalibur to save the world!
+questID = excalib
