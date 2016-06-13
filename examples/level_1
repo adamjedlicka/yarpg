@@ -43,6 +43,7 @@ yFrom = 16
 yTo = 16
 [Zombie_1]
 type = enemy
+eType = zombie
 posX = 15
 posY = 10
 char = Z
@@ -53,6 +54,7 @@ movSpeed = 15
 attSpeed = 15
 [Zombie_2]
 type = enemy
+eType = zombie
 posX = 28
 posY = 13
 char = Z
@@ -63,6 +65,7 @@ movSpeed = 15
 attSpeed = 15
 [Zombie_3]
 type = enemy
+eType = zombie
 posX = 28
 posY = 6
 char = Z
@@ -73,6 +76,7 @@ movSpeed = 15
 attSpeed = 15
 [Boss_1]
 type = enemy
+eType = boss
 posX = 17
 posY = 22
 char = B
@@ -81,11 +85,33 @@ hp = 200
 damage = 50
 movSpeed = 15
 attSpeed = 10
+[Quest_1]
+type = quest
+qType = 0
+ID = zomb
+object = zombie
+text = Kill three zombies.
+times = 3
+[Quest_2]
+type = quest
+qType = 0
+ID = diablo
+object = boss
+text = Kill Diablo. He is located beyond the portal.
+times = 1
 [QuestGiver_1]
 type = NPC
 posX = 1
 posY = 10
 char = !
 color = YELLOW
-text = You need to find Excalibur to save the world!
-questID = excalib
+text = Die zombies!
+questID = zomb
+[QuestGiver_2]
+type = NPC
+posX = 45
+posY = 20
+char = !
+color = YELLOW
+text = Kill Diablo to save the world!
+questID = diablo

@@ -179,7 +179,7 @@ void Engine::tick() {
 
 	if (level && (level->GameState() == OK_STATE || level->GameState() == UNLOAD_STATE))
 		level->Tick(this);
-	else if (level && level->GameState() == LOOSE_STATE) {
+	else if (level && (level->GameState() == LOOSE_STATE || level->GameState() == WIN_STATE)) {
 		if (GetKey('\n')) {
 			delete level;
 			level = NULL;

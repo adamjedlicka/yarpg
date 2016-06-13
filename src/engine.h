@@ -29,6 +29,9 @@
 #define TYPE_RANGED 0
 #define TYPE_MELEE 1
 
+#define EVENT_KILL 0
+#define EVENT_PICKUP 1
+
 class Drawable;
 class Level;
 class Entity;
@@ -191,7 +194,9 @@ class Level : public Drawable {
 	virtual void SpawnEntity(Entity *) = 0;
 	virtual short GameState() = 0;
 	virtual void SetStructure(int, int, Structure *){};
-	virtual Entity* GetPlayer() = 0;
+	virtual Entity *GetPlayer() = 0;
+	virtual void ActivateQuest(const std::string &) = 0;
+	virtual void SendQuestEvent(const std::string &, short) = 0;
 
 	std::pair< int, int > GetOff() { return std::make_pair(offX, offY); };
 };

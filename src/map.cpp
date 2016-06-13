@@ -33,6 +33,9 @@ Map::~Map() {
 		delete[] structures[i];
 	}
 	delete[] structures;
+
+	for (Quest *q : quests)
+		delete q;
 }
 
 void Map::LoadLevel(const std::string &str) {
@@ -98,6 +101,7 @@ bool Map::LoadFromFile(const std::string &file) {
 		} else if (fragment.GetValue("type") == "enemy") {
 			int posX = fragment.GetValueAsInt("posX");
 			int posY = fragment.GetValueAsInt("posY");
+			std::string eType = fragment.GetValue("eType");
 			int hp = fragment.GetValueAsInt("hp");
 			int dmg = fragment.GetValueAsInt("damage");
 			int ch = fragment.GetValueAsChar("char");
@@ -105,7 +109,7 @@ bool Map::LoadFromFile(const std::string &file) {
 			int movSpeed = fragment.GetValueAsInt("movSpeed");
 			int attSpeed = fragment.GetValueAsInt("attSpeed");
 
-			SpawnEntity(new Enemy(posX, posY, hp, dmg, ch, color, movSpeed, attSpeed));
+			SpawnEntity(new Enemy(posX, posY, eType, hp, dmg, ch, color, movSpeed, attSpeed));
 		} else if (fragment.GetValue("type") == "NPC") {
 			int posX = fragment.GetValueAsInt("posX");
 			int posY = fragment.GetValueAsInt("posY");
@@ -115,6 +119,14 @@ bool Map::LoadFromFile(const std::string &file) {
 			short color = fragment.GetColor("color");
 
 			SpawnEntity(new NPC(posX, posY, ch, color, text, questID));
+		} else if (fragment.GetValue("type") == "quest") {
+			std::string ID = fragment.GetValue("ID");
+			std::string text = fragment.GetValue("text");
+			std::string objective = fragment.GetValue("object");
+			int times = fragment.GetValueAsInt("times");
+			short type = fragment.GetValueAsInt("qType");
+
+			quests.push_back(new Quest(ID, text, objective, type, times));
 		}
 	});
 
@@ -140,6 +152,11 @@ void Map::SpawnEntity(Entity *e) {
 }
 
 void Map::Tick(Engine *engine) {
+	if (levelLoaded == true && quests.size() == 0) {
+		gameState = WIN_STATE;
+		return;
+	}
+
 	engine->log << "levelName: " << name << ", gameState: " << gameState << std::endl;
 
 	if (levelLoaded == false && gameState == UNLOAD_STATE) {
@@ -240,6 +257,13 @@ void Map::Render(Buffer *buffer) const {
 		return;
 	}
 
+	if (gameState == WIN_STATE) {
+		std::string text = "You win! Press enter to continue...";
+		buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, buffer->GetHeight() / 2, text);
+
+		return;
+	}
+
 	for (int i = 0; i < height; ++i)
 		for (int j = 0; j < width; j++)
 			if (structures[i][j] != NULL)
@@ -250,6 +274,21 @@ void Map::Render(Buffer *buffer) const {
 
 	if (entities[0])
 		entities[0]->Render(buffer);
+
+	unsigned int questWidth = buffer->GetWidth() / 5;
+	buffer->DrawString(buffer->GetWidth() - questWidth, 0, "Quests: ");
+	int index = 1;
+	for (Quest *q : quests) {
+		if (q->Active()) {
+			std::string text = q->GetText();
+			while (text.size() > questWidth) {
+				buffer->DrawString(buffer->GetWidth() - questWidth, 1 + index++, text.substr(0, questWidth));
+				text = text.substr(questWidth);
+			}
+			buffer->DrawString(buffer->GetWidth() - questWidth, 1 + index++, text.substr(0, questWidth));
+			index++;
+		}
+	}
 }
 
 void Map::SetStructure(int x, int y, Structure *s) {
@@ -258,4 +297,51 @@ void Map::SetStructure(int x, int y, Structure *s) {
 
 	delete structures[y][x];
 	structures[y][x] = s;
+}
+
+void Map::ActivateQuest(const std::string &ID) {
+	for (Quest *q : quests) {
+		if (q->GetID() == ID)
+			q->Activate();
+	}
+}
+
+void Map::SendQuestEvent(const std::string &obj, short type) {
+	for (auto it = quests.begin(); it != quests.end(); it++) {
+		Quest *q = *it;
+		if (q->GetType() == type && q->GetObjective() == obj) {
+			int progress = q->Progress();
+			if (progress == 0) {
+				it = quests.erase(it);
+				delete q;
+				if (it == quests.end())
+					return;
+			}
+		}
+	}
+}
+
+Quest::Quest(const std::string &ID, const std::string &text, const std::string &objective, short type, int times) {
+	this->ID = ID, this->text = text, this->objective = objective;
+	this->type = type, this->times = times;
+	active = false;
+}
+
+Quest::~Quest() {}
+
+std::string Quest::GetText() {
+	if (times == 1) {
+		return text;
+	} else {
+		std::stringstream ss;
+		ss << text << " (" << times << " remaining)";
+		return ss.str();
+	}
+}
+
+int Quest::Progress() {
+	if (--times == 0) {
+		active = false;
+	}
+	return times;
 }

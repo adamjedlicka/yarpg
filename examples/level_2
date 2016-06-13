@@ -13,3 +13,14 @@ X                  X\
 X                  X\
 X                  X\
 XXXXXXXXXXXXXXXXXXXX
+[Diablo]
+type = enemy
+eType = Diablo
+posX = 10
+posY = 5
+char = W
+color = RED
+hp = 200
+damage = 50
+movSpeed = 15
+attSpeed = 10

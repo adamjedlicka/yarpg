@@ -65,7 +65,9 @@ void Melee::Colide(Entity *e) {
 }
 
 // ---------------------- ENEMY ----------------------
-Enemy::Enemy(int x, int y, int health, int dmg, char c, short col, int movSpeed, int attSpeed) : Entity(x, y) {
+Enemy::Enemy(int x, int y, const std::string &type, int health, int dmg, char c, short col, int movSpeed, int attSpeed)
+	: Entity(x, y) {
+	enemyType = type;
 	hp = health, damage = dmg;
 	ch = c, color = col;
 	this->movSpeed = movSpeed, this->attSpeed = attSpeed;
@@ -103,6 +105,7 @@ void Enemy::Colide(Entity *e) {
 		SetPos(posX - dirX, posY - dirY);
 }
 bool Enemy::Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; }
+void Enemy::OnDestroy() { level->SendQuestEvent(enemyType, EVENT_KILL); }
 
 // ---------------------- NPC ----------------------
 NPC::NPC(int x, int y, char ch, short color, const std::string &text, const std::string &questID) : Entity(x, y) {
@@ -125,6 +128,7 @@ void NPC::Colide(Entity *e) {
 	if (e->IsPlayer()) {
 		showText = true;
 		showTextTicks = 1;
+		level->ActivateQuest(questID);
 	}
 }
 

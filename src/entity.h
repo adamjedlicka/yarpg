@@ -48,6 +48,7 @@ class Melee : public Entity {
 
 class Enemy : public Entity {
   protected:
+	std::string enemyType;
 	int damage, movSpeed, attSpeed;
 	char ch;
 	short color;
@@ -55,7 +56,7 @@ class Enemy : public Entity {
 	int movTicks, attTicks;
 
   public:
-	Enemy(int, int, int, int, char, short, int, int);
+	Enemy(int, int, const std::string &, int, int, char, short, int, int);
 	virtual ~Enemy();
 
 	virtual void Tick(Engine *);
@@ -63,6 +64,7 @@ class Enemy : public Entity {
 	virtual void Colide(Entity *);
 	virtual bool Attack(int);
 	virtual bool IsSolid() { return true; }
+	virtual void OnDestroy();
 };
 
 class NPC : public Entity {
