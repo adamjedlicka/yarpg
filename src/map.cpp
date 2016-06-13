@@ -41,7 +41,7 @@ void Map::LoadLevel(const std::string &str) {
 }
 
 bool Map::LoadFromFile(const std::string &file) {
-	std::string path = GetPath() + "data/levels/" + file;
+	std::string path = GetPath() + "examples/" + file;
 
 	SML global;
 	global.ReadFile(path);

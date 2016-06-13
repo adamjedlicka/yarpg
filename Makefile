@@ -1,33 +1,26 @@
 
-program = yarpg
+program = jedliad1
 
-CC = g++
-CF = -std=c++11 -Wall -pedantic
-CD = -g -fsanitize=address
+CF = -std=c++11 -Wall -pedantic -Wno-long-long -O0 -ggdb
 CL = -lncurses
+CD = #-g -fsanitize=address
 
-src = src/main.cpp src/engine.cpp src/map.cpp src/player.cpp src/structure.cpp src/entity.cpp
-obj = build/main.o build/engine.o build/map.o build/player.o build/structure.o build/entity.o
+all: ${program}
 
-build: ${program}
+compile: ${program}
+
+run: compile
+	./${program}
+
+doc:
 	
 clean:
 	rm -rf build
-	rm -rf bin
+	rm -rf ${program}
 
-install: bin/${program}
-	cp -f bin/${program} /usr/bin/${program}
-	
-uninstall:
-	rm -f /usr/bin/${program}
-
-${program}: ${obj}
-	mkdir -p bin
-	cp -rf src/data bin
-	${CC} ${obj} ${CD} ${CL} -o bin/${program}
-
-${obj}: ${src}
+${program}:
 	mkdir -p build
 	cd build
-	${CC} ${CF} ${CD} ${CL} -c ${src}
+	g++ ${CF} ${CD} ${CL} -c src/*.cpp
 	mv *.o build/
+	g++ build/*.o ${CD} ${CL} -o ${program}
