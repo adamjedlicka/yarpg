@@ -95,21 +95,18 @@ bool Map::LoadFromFile(const std::string &file) {
 			int yTo = fragment.GetValueAsInt("yTo");
 
 			SpawnEntity(new DoorSwitch(posX, posY, xFrom, xTo, yFrom, yTo));
+		} else if (fragment.GetValue("type") == "enemy") {
+			int posX = fragment.GetValueAsInt("posX");
+			int posY = fragment.GetValueAsInt("posY");
+			int hp = fragment.GetValueAsInt("hp");
+			int dmg = fragment.GetValueAsInt("damage");
+			int ch = fragment.GetValueAsChar("char");
+			short color = fragment.GetColor("color");
+			int movSpeed = fragment.GetValueAsInt("movSpeed");
+			int attSpeed = fragment.GetValueAsInt("attSpeed");
+
+			SpawnEntity(new Enemy(posX, posY, hp, dmg, ch, color, movSpeed, attSpeed));
 		}
-	});
-
-	SML enemies;
-	enemies.ReadFile(path + "_enemies");
-
-	enemies.ForEach([this](const std::string &key, const SML_Fragment &fragment) {
-		int posX = fragment.GetValueAsInt("posX");
-		int posY = fragment.GetValueAsInt("posY");
-		int hp = fragment.GetValueAsInt("hp");
-		int dmg = fragment.GetValueAsInt("damage");
-		int ch = fragment.GetValueAsChar("char");
-		short color = fragment.GetColor("color");
-
-		SpawnEntity(new Enemy(posX, posY, hp, dmg, ch, color));
 	});
 
 	return true;

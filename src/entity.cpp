@@ -33,7 +33,7 @@ void Fireball::OnDestroy() {
 
 // ---------------------- FIREBALL BLAST ----------------------
 FireballBlast::FireballBlast(int x, int y) : Entity(x, y) {
-	ticks = 10;
+	ticks = 1;
 	damage = 5;
 }
 FireballBlast::~FireballBlast() {}
@@ -47,16 +47,42 @@ void FireballBlast::Render(Buffer *buffer) const {
 void FireballBlast::Colide(Entity *e) { e->Attack(damage); }
 
 // ---------------------- ENEMY ----------------------
-Enemy::Enemy(int x, int y, int health, int dmg, char c, short col) : Entity(x, y) {
+Enemy::Enemy(int x, int y, int health, int dmg, char c, short col, int movSpeed, int attSpeed) : Entity(x, y) {
 	hp = health, damage = dmg;
 	ch = c, color = col;
+	this->movSpeed = movSpeed, this->attSpeed = attSpeed;
+	movTicks = 0, attTicks = 0;
 }
 Enemy::~Enemy() {}
-void Enemy::Tick(Engine *engine) {}
+
+void Enemy::Tick(Engine *engine) {
+	Entity *player = engine->GetCurLevel()->GetPlayer();
+	int pPosX = player->GetPos().first;
+	int pPosY = player->GetPos().second;
+
+	dirX = MIN(MAX(pPosX - posX, -1), 1);
+	dirY = MIN(MAX(pPosY - posY, -1), 1);
+
+	if (movTicks > movSpeed) {
+		posX += dirX;
+		posY += dirY;
+		movTicks = 0;
+	}
+
+	movTicks++;
+	attTicks++;
+}
+
 void Enemy::Render(Buffer *buffer) const {
 	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, ch, color);
 }
-void Enemy::Colide(Entity *e) { e->Attack(damage); }
+void Enemy::Colide(Entity *e) {
+	if (attTicks > attSpeed && e->IsPlayer()) {
+		e->Attack(damage);
+		attTicks = 0;
+	}
+	SetPos(posX - dirX, posY - dirY);
+}
 bool Enemy::Attack(int dmg) { return (hp -= dmg) <= 0 ? Destroy(), true : false; }
 
 // ---------------------- PORTAL ----------------------

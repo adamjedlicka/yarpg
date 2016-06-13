@@ -41,3 +41,13 @@ xFrom = 14
 xTo = 20
 yFrom = 16
 yTo = 16
+[Zombie_1]
+type = enemy
+posX = 15
+posY = 10
+char = Z
+color = GREEN
+hp = 50
+damage = 10
+movSpeed = 15
+attSpeed = 15

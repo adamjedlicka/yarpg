@@ -31,6 +31,7 @@ class Map : public Level {
 	virtual void Tick(Engine *);
 	virtual void Render(Buffer *) const;
 	virtual void SetStructure(int, int, Structure *);
+	virtual Entity* GetPlayer() { return player; };
 
 	bool LoadFromFile(const std::string &);
 	void SpawnPlayer(Entity *);

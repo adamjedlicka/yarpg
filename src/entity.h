@@ -34,12 +34,14 @@ class FireballBlast : public Entity {
 
 class Enemy : public Entity {
   protected:
-	int damage;
+	int damage, movSpeed, attSpeed;
 	char ch;
 	short color;
 
+	int movTicks, attTicks;
+
   public:
-	Enemy(int, int, int, int, char, short);
+	Enemy(int, int, int, int, char, short, int, int);
 	virtual ~Enemy();
 
 	virtual void Tick(Engine *);
