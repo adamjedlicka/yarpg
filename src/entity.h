@@ -32,6 +32,19 @@ class FireballBlast : public Entity {
 	virtual void Colide(Entity *);
 };
 
+class Melee : public Entity {
+  protected:
+	int damage;
+	int ticks;
+	public:
+	Melee(int, int);
+	virtual ~Melee();
+
+	virtual void Tick(Engine *);
+	virtual void Render(Buffer *) const;
+	virtual void Colide(Entity *);
+};
+
 class Enemy : public Entity {
   protected:
 	int damage, movSpeed, attSpeed;

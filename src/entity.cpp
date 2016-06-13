@@ -46,6 +46,24 @@ void FireballBlast::Render(Buffer *buffer) const {
 }
 void FireballBlast::Colide(Entity *e) { e->Attack(damage); }
 
+// ---------------------- MELEE ----------------------
+Melee::Melee(int x, int y) : Entity(x, y) {
+	ticks = 1;
+	damage = 25;
+}
+Melee::~Melee() {}
+void Melee::Tick(Engine *engine) {
+	if (ticks-- == 0)
+		Destroy();
+}
+void Melee::Render(Buffer *buffer) const {
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, '+', COLOR_MAGENTA);
+}
+void Melee::Colide(Entity *e) {
+	if (!e->IsPlayer())
+		e->Attack(damage);
+}
+
 // ---------------------- ENEMY ----------------------
 Enemy::Enemy(int x, int y, int health, int dmg, char c, short col, int movSpeed, int attSpeed) : Entity(x, y) {
 	hp = health, damage = dmg;

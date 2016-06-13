@@ -7,6 +7,7 @@
 class Player : public Entity {
   protected:
 	std::string name;
+	short type;
 
 	// stats
 	int speed;
@@ -15,7 +16,7 @@ class Player : public Entity {
 	int ticksSinceLastStep;
 
   public:
-	Player(const std::string &);
+	Player(const std::string &, short type);
 	virtual ~Player();
 
 	virtual void Tick(Engine *);

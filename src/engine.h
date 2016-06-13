@@ -26,6 +26,9 @@
 #define WIN_STATE 2
 #define UNLOAD_STATE 4
 
+#define TYPE_RANGED 0
+#define TYPE_MELEE 1
+
 class Drawable;
 class Level;
 class Entity;
@@ -215,8 +218,10 @@ class Structure : public Drawable {
 class Splash : public Drawable {
   private:
 	std::string logo;
+	std::map< std::string, std::string > flags;
 
 	bool active;
+	int menuStage;
 	std::vector< std::string > menu;
 	unsigned int menuSelection;
 

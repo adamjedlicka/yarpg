@@ -71,3 +71,13 @@ hp = 50
 damage = 10
 movSpeed = 15
 attSpeed = 15
+[Boss_1]
+type = enemy
+posX = 17
+posY = 22
+char = B
+color = RED
+hp = 200
+damage = 50
+movSpeed = 15
+attSpeed = 10

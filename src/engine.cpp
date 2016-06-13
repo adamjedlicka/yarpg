@@ -142,7 +142,7 @@ void Engine::loop() {
 		while (c = getch(), c != ERR)
 			keys[c] = true;
 
-		if (GetKey(KEY_BACKSPACE)) { // quit the game
+		if (GetKey(KEY_EXIT)) { // quit the game
 			Stop();
 			return;
 		}
@@ -351,28 +351,56 @@ Splash::Splash() {
 	menu.push_back("New game");
 	menu.push_back("Quit");
 	menuSelection = 0;
+	menuStage = 0;
 	active = true;
+
+	flags["playerType"] = "";
+	flags["playerName"] = "";
 }
 
 Splash::~Splash() {}
 
 void Splash::Tick(Engine *engine) {
-	if (engine->GetKey(KEY_DOWN))
-		menuSelection++;
-	if (engine->GetKey(KEY_UP))
-		menuSelection--;
-	menuSelection = MIN(menuSelection, menu.size() - 1);
+	if (menuStage == 0) {
+		if (engine->GetKey(KEY_DOWN))
+			menuSelection++;
+		if (engine->GetKey(KEY_UP))
+			menuSelection--;
+		menuSelection = MIN(menuSelection, menu.size() - 1);
 
-	if (engine->GetKey('\n')) {
-		if (menuSelection == 0) {
-			active = false;
-			std::map< std::string, std::string > flags;
-			flags["playerName"] = "Winty";
-			flags["levelName"] = "level_1";
-			engine->LoadContent(flags);
-		} else if (menuSelection == 1) {
-			engine->Stop();
+		if (engine->GetKey('\n')) {
+			if (menuSelection == 0) {
+				menuStage++;
+			} else if (menuSelection == 1) {
+				engine->Stop();
+			}
 		}
+	} else if (menuStage == 1) {
+		if (engine->GetKey('\n'))
+			menuStage++;
+		if (engine->GetKey(KEY_BACKSPACE) && flags["playerName"].size() > 0)
+			flags["playerName"] = flags["playerName"].substr(0, flags["playerName"].size() - 1);
+
+		for (int i = 65; i <= 90; ++i) {
+			if (engine->GetKey(i))
+				flags["playerName"] += (char)i;
+		}
+		for (int i = 97; i <= 122; ++i) {
+			if (engine->GetKey(i))
+				flags["playerName"] += (char)i;
+		}
+	} else if (menuStage == 2) {
+		if (engine->GetKey('m') || engine->GetKey('M')) {
+			flags["playerType"] = "melee";
+			menuStage++;
+		} else if (engine->GetKey('r') || engine->GetKey('R')) {
+			flags["playerType"] = "ranged";
+			menuStage++;
+		}
+	} else if (menuStage == 3) {
+		active = false;
+		flags["levelName"] = "level_1";
+		engine->LoadContent(flags);
 	}
 }
 
@@ -384,12 +412,20 @@ void Splash::Render(Buffer *buffer) const {
 
 	buffer->DrawString(startX, startY, logo);
 
-	for (unsigned int i = 0; i < menu.size(); ++i) {
-		int len = menu[i].size();
-		if (menuSelection == i)
-			buffer->DrawString(buffer->GetWidth() / 2 - len / 2 - 2, startY + logoHeight + 10 + i, "> " + menu[i]);
-		else
-			buffer->DrawString(buffer->GetWidth() / 2 - len / 2, startY + logoHeight + 10 + i, menu[i]);
+	if (menuStage == 0) {
+		for (unsigned int i = 0; i < menu.size(); ++i) {
+			int len = menu[i].size();
+			if (menuSelection == i)
+				buffer->DrawString(buffer->GetWidth() / 2 - len / 2 - 2, startY + logoHeight + 10 + i, "> " + menu[i]);
+			else
+				buffer->DrawString(buffer->GetWidth() / 2 - len / 2, startY + logoHeight + 10 + i, menu[i]);
+		}
+	} else if (menuStage == 1) {
+		std::string text = "Choose your name: " + flags.find("playerName")->second;
+		buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, startY + logoHeight + 10, text);
+	} else if (menuStage == 2) {
+		std::string text = "Press [m] key for melee hero, or [r] key for ranged hero.";
+		buffer->DrawString(buffer->GetWidth() / 2 - text.size() / 2, startY + logoHeight + 10, text);
 	}
 }
 
