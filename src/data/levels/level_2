@@ -1,7 +1,7 @@
 height = 10
 width = 20
-spawnX = 5
-spawnY = 5
+spawnX = 18
+spawnY = 8
 map = \
 XXXXXXXXXXXXXXXXXXXX\
 X                  X\

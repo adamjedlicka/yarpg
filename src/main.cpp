@@ -14,7 +14,7 @@ int main() {
 		Player *player = new Player(flags["playerName"]);
 		Map *level = new Map();
 		level->LoadLevel(flags["levelName"]);
-		level->SpawnPlayer(player);
+		level->SetPlayer(player);
 		e.LoadLevel(level);
 	});
 

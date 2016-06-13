@@ -34,7 +34,9 @@ class Map : public Level {
 	bool LoadFromFile(const std::string &);
 	void SpawnPlayer(Entity *);
 	void SpawnEntity(Entity *);
+
 	short GameState() { return gameState; };
+	void SetPlayer(Entity *e) { player = e; };
 };
 
 #endif

@@ -10,6 +10,8 @@ Map::Map() {
 	spawnY = 0;
 	name = "level name";
 
+	player = NULL;
+
 	gameState = UNLOAD_STATE;
 	levelLoaded = false;
 
@@ -124,6 +126,8 @@ void Map::Tick(Engine *engine) {
 
 	if (levelLoaded == false && gameState == UNLOAD_STATE) {
 		LoadFromFile(name);
+		SpawnPlayer(player);
+
 		levelLoaded = true;
 		gameState = OK_STATE;
 	} else if (levelLoaded == true && gameState == UNLOAD_STATE) {
@@ -146,6 +150,7 @@ void Map::Tick(Engine *engine) {
 		LoadFromFile(name);
 		SpawnPlayer(player);
 
+		levelLoaded = true;
 		gameState = OK_STATE;
 	}
 
