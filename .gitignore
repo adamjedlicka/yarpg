@@ -31,8 +31,10 @@ bin/
 build/
 srcTMP/
 doc/
+jedliad1/
 
 jedliad1
+jedliad1.zip
 log.txt
 log
 core
