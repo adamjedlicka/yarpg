@@ -38,6 +38,7 @@ class Entity;
 class Structure;
 class Buffer;
 class Splash;
+class Item;
 
 class Engine {
   private:
@@ -155,10 +156,11 @@ class Entity : public Drawable {
 	int posX, posY, dirX, dirY;
 	bool destroyed;
 	int hp, energy;
+	std::vector< Item * > inventory;
 
   public:
 	Entity(int x, int y) { posX = x, posY = y, destroyed = false; };
-	virtual ~Entity(){};
+	virtual ~Entity();
 
 	virtual void Colide(Entity *){};
 	virtual void Colide(Structure *){};
@@ -173,6 +175,7 @@ class Entity : public Drawable {
 	void SetDir(int x, int y) { dirX = x, dirY = y; }
 	Level *GetLevel() { return level; };
 	void SetLevel(Level *lvl) { level = lvl; };
+	void EquipItem(Item *i) { inventory.push_back(i); };
 	bool Destroyed() { return destroyed; }
 	void Destroy() {
 		if (!destroyed) {
@@ -240,6 +243,19 @@ class Splash : public Drawable {
 	void Activate() { active = true; };
 	void Tick(Engine *);
 	void Render(Buffer *) const;
+};
+
+class Item {
+  private:
+	int movSpeed, armor, damage;
+
+  public:
+	Item(int movSpeed, int armor, int damage) { this->movSpeed = movSpeed, this->armor = armor, this->damage = damage; }
+	~Item() {}
+
+	int GetMovSpeed() { return movSpeed; };
+	int GetArmor() { return armor; };
+	int GetDamage() { return damage; };
 };
 
 // helper functions

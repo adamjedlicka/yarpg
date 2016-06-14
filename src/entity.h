@@ -86,6 +86,20 @@ class NPC : public Entity {
 	virtual bool IsSolid() { return true; };
 };
 
+class ItemGiver : public Entity {
+  protected:
+	int movSpeed, armor, damage;
+	char ch;
+	short color;
+
+  public:
+	ItemGiver(int, int, int, int, int, char, short);
+	~ItemGiver();
+
+	void Render(Buffer *) const;
+	void Colide(Entity *);
+};
+
 class Portal : public Entity {
   protected:
 	std::string nextLevel;

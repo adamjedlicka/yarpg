@@ -20,7 +20,11 @@ void Player::Tick(Engine *engine) {
 	dirX = MAX(dirX, -1), dirX = MIN(dirX, 1);
 	dirY = MAX(dirY, -1), dirY = MIN(dirY, 1);
 
-	if (ticksSinceLastStep >= speed) {
+	int movSpeedBonus = 0;
+	for (Item *i : inventory)
+		movSpeedBonus += i->GetMovSpeed();
+
+	if (ticksSinceLastStep >= (speed - movSpeedBonus)) {
 		posX += dirX;
 		posY += dirY;
 		ticksSinceLastStep = 0;

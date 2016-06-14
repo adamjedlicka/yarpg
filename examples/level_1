@@ -115,3 +115,11 @@ char = !
 color = YELLOW
 text = Kill Diablo to save the world!
 questID = diablo
+[Boots_of_Speed]
+type = item
+posX = 1
+posY = 1
+movSpeed = 5
+armor = 1
+char = L
+color = RED

@@ -132,6 +132,23 @@ void NPC::Colide(Entity *e) {
 	}
 }
 
+// ---------------------- ITEM GIVER ----------------------
+ItemGiver::ItemGiver(int x, int y, int movSpeed, int armor, int damage, char ch, short color) : Entity(x, y) {
+	this->movSpeed = movSpeed, this->armor = armor, this->damage = damage;
+	this->ch = ch;
+	this->color = color;
+}
+ItemGiver::~ItemGiver(){}
+void ItemGiver::Render(Buffer *buffer) const {
+	buffer->DrawChar(posX + level->GetOff().first, posY + level->GetOff().second, ch, color);
+}
+void ItemGiver::Colide(Entity *e) {
+	if (e->IsPlayer()) {
+		e->EquipItem(new Item(movSpeed, armor, damage));
+		Destroy();
+	}
+}
+
 // ---------------------- PORTAL ----------------------
 Portal::Portal(int x, int y, const std::string &lvl) : Entity(x, y) { nextLevel = lvl; }
 Portal::~Portal() {}

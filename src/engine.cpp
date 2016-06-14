@@ -244,6 +244,11 @@ void Engine::drawBuffer() {
 	refresh();
 }
 
+Entity::~Entity() {
+	for (unsigned int i = 0; i < inventory.size(); ++i)
+		delete inventory[i];
+}
+
 SML::SML() {}
 SML::~SML() {}
 
@@ -307,10 +312,19 @@ void SML_Fragment::AddValue(const std::string &raw) {
 	data[raw.substr(0, index)] = raw.substr(index + 3);
 }
 
-std::string SML_Fragment::GetValue(const std::string &key) const { return data.find(key)->second; }
-int SML_Fragment::GetValueAsInt(const std::string &key) const { return std::stoi(data.find(key)->second); }
-char SML_Fragment::GetValueAsChar(const std::string &key) const { return data.find(key)->second[0]; }
+std::string SML_Fragment::GetValue(const std::string &key) const {
+	return (data.find(key) != data.end()) ? data.find(key)->second : "";
+}
+int SML_Fragment::GetValueAsInt(const std::string &key) const {
+	return (data.find(key) != data.end()) ? std::stoi(data.find(key)->second) : 0;
+}
+char SML_Fragment::GetValueAsChar(const std::string &key) const {
+	return (data.find(key) != data.end()) ? data.find(key)->second[0] : ' ';
+}
 short SML_Fragment::GetColor(const std::string &key) const {
+	if (data.find(key) == data.end())
+		return COLOR_BLACK;
+
 	std::string val = data.find(key)->second;
 	if (val == "WHITE")
 		return COLOR_WHITE;

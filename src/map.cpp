@@ -127,6 +127,16 @@ bool Map::LoadFromFile(const std::string &file) {
 			short type = fragment.GetValueAsInt("qType");
 
 			quests.push_back(new Quest(ID, text, objective, type, times));
+		} else if (fragment.GetValue("type") == "item") {
+			int posX = fragment.GetValueAsInt("posX");
+			int posY = fragment.GetValueAsInt("posY");
+			int movSpeed = fragment.GetValueAsInt("movSpeed");
+			int armor = fragment.GetValueAsInt("armor");
+			int damage = fragment.GetValueAsInt("damage");
+			char ch = fragment.GetValueAsChar("char");
+			short color = fragment.GetColor("color");
+
+			SpawnEntity(new ItemGiver(posX, posY, movSpeed, armor, damage, ch, color));
 		}
 	});
 
